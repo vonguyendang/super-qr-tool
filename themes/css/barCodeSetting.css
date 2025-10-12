@@ -1,0 +1,190 @@
+.barcode-dialog .drawer-box .el-drawer {
+	height: 450px !important;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+.barcode-dialog .drawer-box .el-drawer .el-drawer__header{
+	height: 0;
+	padding: 0;
+	margin: 0;
+	display: none;
+}
+.barcode-dialog .drawer-container .el-tabs__header {
+	width: 85%;
+}
+
+.barcode-dialog .drawer-container .el-tabs__nav-prev {
+	display: none;
+}
+
+.barcode-dialog .drawer-container .el-tabs__nav-next {
+	display: none;
+}
+
+.barcode-dialog .drawer-container .el-tabs__nav-wrap::after {
+	background: none;
+}
+
+.barcode-dialog .drawer-container .el-tabs__nav-scroll {
+	overflow: auto hidden;
+}
+
+.barcode-dialog .drawer-container .el-tabs__nav-wrap.is-scrollable {
+	padding: 0;
+}
+
+.barcode-dialog .drawer-container .el-tabs__nav-scroll::-webkit-scrollbar {
+	display: none;
+}
+
+.barcode-dialog .drawer-container .el-input-number .el-input__inner {
+	text-align: left;
+}
+
+.barcode-dialog .drawer-container {
+	width: 100%;
+	padding: 10px 16px 16px;
+	position: relative;
+}
+
+.barcode-dialog .drawer-close-btn {
+	position: absolute;
+	top: 10px;
+	right: 16px;
+	font-size: 20px;
+	z-index: 10;
+	cursor: pointer;
+}
+.barcode-dialog .code-dialog-box .el-dialog__headerbtn{
+	font-size: 22px;
+	top: 30px;
+	right: 32px;
+}
+
+.barcode-dialog .code-dialog-box .el-dialog__body {
+	padding: 0 32px 48px;
+}
+
+.barcode-dialog .code-dialog-container {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+}
+.barcode-dialog .code-dialog-container .el-tabs__nav-prev {
+	font-size: 20px;
+	line-height: 32px;
+}
+
+.barcode-dialog .code-dialog-container .el-tabs__nav-next {
+	font-size: 20px;
+	line-height: 32px;
+}
+
+.barcode-dialog .code-dialog-container .el-tabs__nav-wrap::after {
+	background: none;
+}
+
+.barcode-dialog .code-dialog-container .el-input__inner {
+	text-align: left;
+}
+.barcode-dialog .code-dialog-container .el-color-picker {
+	height: 48px;
+}
+
+.barcode-dialog .code-dialog-container .el-color-picker__trigger {
+	width: 188px;
+	height: 48px;
+	padding: 10px;
+}
+
+.barcode-dialog .code-dialog-container .el-color-picker__color {
+	border: 1px solid #e6e6e6;
+}
+
+.barcode-dialog .code-dialog-container .el-color-picker__icon {
+	display: none;
+}
+
+.barcode-dialog .code-dialog-container .el-tabs__header {
+	margin: 0 0 24px;
+}
+
+.barcode-dialog .code-dialog-container-left {
+	width: calc(100% - 442px - 32px);
+}
+
+.barcode-dialog .flex-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.barcode-dialog .flex-col {
+	width: 47%;
+}
+
+.barcode-dialog .attr-title {
+	font-size: 16px;
+	color: #535d6c;
+	line-height: 24px;
+	margin: 12px 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.barcode-dialog .preview-container {
+	width: 442px;
+	height: 400px;
+	background: #f5f8fc;
+	margin-top: 48px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 64px 20px;
+	font-size: 16px;
+	color: #2255f4;
+	line-height: 22px;
+	position: relative;
+	text-align: center;
+}
+
+.barcode-dialog .preview-container img {
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+}
+
+.barcode-dialog .preview-container p {
+	position: absolute;
+	text-align: center;
+	margin-top: 34px;
+	bottom: 24px;
+	cursor: pointer;
+}
+
+.barcode-dialog .preview-container p i {
+	margin-right: 4px;
+}
+
+.barcode-dialog .preview-down-btn .el-button {
+	width: 100%;
+	height: 48px;
+	background: #2255f4;
+	border: none;
+	border-radius: 4px;
+	font-size: 18px;
+	color: #ffffff;
+	line-height: 24px;
+	padding: 0;
+	text-align: center;
+	margin-top: 20px;
+}
+
+.barcode-dialog .preview-down-btn .el-button:hover {
+	background: rgba(86, 125, 246, 1);
+}
+
+.barcode-dialog .preview-down-btn .el-button:active {
+	background: rgba(33, 80, 223, 1);
+}
