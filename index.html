@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium QR Code Generator</title>
+    <link rel="shortcut icon" href="favicon_io/android-chrome-512x512.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="app-header">
+        <div class="header-content">
+            <h1>QR Generator Pro</h1>
+            <p>Tạo mã QR hàng loạt, quản lý và theo dõi truy cập chuyên nghiệp</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="card">
+            <div class="tabs">
+                <button class="tab-button active" onclick="openTab(event, 'Website')">Website</button>
+                <button class="tab-button" onclick="openTab(event, 'VCard')">VCard</button>
+                <button class="tab-button" onclick="openTab(event, 'Text')">Text</button>
+                <button class="tab-button" onclick="openTab(event, 'Email')">Email</button>
+                <button class="tab-button" onclick="openTab(event, 'Facebook')">Facebook</button>
+                <button class="tab-button" onclick="openTab(event, 'Wifi')">Wifi</button>
+                <button class="tab-button" onclick="openTab(event, 'Phone')">Phone</button>
+                <button class="tab-button" onclick="openTab(event, 'SMS')">SMS</button>
+            </div>
+
+            <!-- Logo Section -->
+            <div class="section-block" id="logoSection">
+                <h3>Tùy chỉnh Logo</h3>
+                <div class="logo-upload-wrapper">
+                    <input type="file" id="logoInput" accept="image/*" hidden>
+                    <label for="logoInput" class="upload-btn">Chọn Logo</label>
+                    <div id="logoPreviewContainer" style="display:none;">
+                        <img id="logoImage" alt="Logo Preview">
+                        <button id="removeLogoButton" class="icon-btn delete-btn">Xóa Logo</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="Website" style="display: block;">
+                <h2>Tạo mã QR cho Website</h2>
+                <div class="form-group">
+                    <label>Nhập danh sách URL (mỗi dòng 1 URL)</label>
+                    <textarea id="websiteUrls" placeholder="https://example.com&#10;https://google.com"
+                        rows="5"></textarea>
+                </div>
+                <div class="form-group row-flex" style="align-items: center;">
+                    <label style="margin-bottom: 0;">Hoặc Import từ Excel/CSV:</label>
+                    <input type="file" id="excelInput" accept=".xlsx, .xls, .csv" hidden>
+                    <label for="excelInput" class="upload-btn" style="margin-bottom: 0;">Chọn File</label>
+                    <button class="btn-secondary icon-btn" onclick="downloadTemplate()"
+                        style="padding: 0.5rem 1rem; font-size: 0.9rem;">Tải file mẫu</button>
+                </div>
+                <div id="validationErrors" class="error-box" style="display: none;"></div>
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('website')"
+                    id="btn-generate-website">Generate QR Codes</button>
+            </div>
+
+            <div class="tab-content" id="VCard" style="display: none;">
+                <h2>Generate QR Code for VCard</h2>
+                <div class="grid-2">
+                    <input type="text" id="vcardFirstName" placeholder="First Name">
+                    <input type="text" id="vcardLastName" placeholder="Last Name">
+                    <input type="text" id="vcardPhone" placeholder="Phone Number">
+                    <input type="email" id="vcardEmail" placeholder="Email">
+                    <input type="text" id="vcardCompany" placeholder="Company">
+                    <input type="text" id="vcardJobTitle" placeholder="Job Title">
+                    <input type="text" id="vcardCompanyPhone" placeholder="Company Phone">
+                    <input type="text" id="vcardFax" placeholder="Fax">
+                    <input type="email" id="vcardCompanyEmail" placeholder="Company Email">
+                    <input type="text" id="vcardCompanyWebsite" placeholder="Company Website">
+                    <input type="text" id="vcardStreet" placeholder="Street">
+                    <input type="text" id="vcardCity" placeholder="City">
+                    <input type="text" id="vcardState" placeholder="State">
+                    <input type="text" id="vcardCountry" placeholder="Country">
+                    <input type="text" id="vcardZip" placeholder="Zip Code">
+                    <input type="text" id="vcardPostalCode" placeholder="Postal Code">
+                </div>
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('vcard')">Generate QR
+                    Code</button>
+            </div>
+
+            <div class="tab-content" id="Text" style="display: none;">
+                <h2>Generate QR Code for Text</h2>
+                <textarea id="textContent" placeholder="Enter text" rows="4"></textarea>
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('text')">Generate QR Code</button>
+            </div>
+
+            <div class="tab-content" id="Email" style="display: none;">
+                <h2>Generate QR Code for Email</h2>
+                <input type="email" id="emailAddress" placeholder="Email Address">
+                <input type="text" id="emailSubject" placeholder="Subject">
+                <textarea id="emailBody" placeholder="Body" rows="4"></textarea>
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('email')">Generate QR
+                    Code</button>
+            </div>
+
+            <div class="tab-content" id="Facebook" style="display: none;">
+                <h2>Generate QR Code for Facebook</h2>
+                <input type="text" id="facebookLink" placeholder="Facebook Link">
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('facebook')">Generate QR
+                    Code</button>
+            </div>
+
+            <div class="tab-content" id="Wifi" style="display: none;">
+                <h2>Generate QR Code for Wifi</h2>
+                <input type="text" id="wifiName" placeholder="Wifi Name">
+                <input type="text" id="wifiPassword" placeholder="Wifi Password">
+                <select id="wifiEncryption">
+                    <option value="nopass">No Encryption</option>
+                    <option value="wep">WEP</option>
+                    <option value="wpa">WPA/WPA2</option>
+                </select>
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('wifi')">Generate QR Code</button>
+            </div>
+
+            <div class="tab-content" id="Phone" style="display: none;">
+                <h2>Generate QR Code for Phone</h2>
+                <input type="text" id="phoneNumber" placeholder="Phone Number (e.g., +84987654321)">
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('phone')">Generate QR
+                    Code</button>
+            </div>
+
+            <div class="tab-content" id="SMS" style="display: none;">
+                <h2>Generate QR Code for SMS</h2>
+                <input type="text" id="smsPhoneNumber" placeholder="Phone Number">
+                <textarea id="smsMessage" placeholder="Message" rows="3"></textarea>
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('sms')">Generate QR Code</button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="card" style="display: none;">
+            <div class="results-header">
+                <h2>Kết quả QR Code</h2>
+                <div class="batch-actions" style="align-items: center;">
+                    <button class="btn-secondary" onclick="selectAll()">Chọn tất cả</button>
+                    <button class="btn-secondary" onclick="deselectAll()">Bỏ chọn tất cả</button>
+                    <div class="zip-format-options" style="display: flex; gap: 0.8rem; margin: 0 1rem;">
+                        <label
+                            style="display: flex; align-items: center; gap: 0.2rem; font-size: 0.9rem; cursor: pointer;"><input
+                                type="checkbox" id="zipIncludePng" checked> PNG</label>
+                        <label
+                            style="display: flex; align-items: center; gap: 0.2rem; font-size: 0.9rem; cursor: pointer;"><input
+                                type="checkbox" id="zipIncludeSvg" checked> SVG</label>
+                        <label
+                            style="display: flex; align-items: center; gap: 0.2rem; font-size: 0.9rem; cursor: pointer;"><input
+                                type="checkbox" id="zipIncludeHtml"> HTML</label>
+                    </div>
+                    <span id="selectedBadge" class="selected-badge" style="display:none;"></span>
+                    <button class="btn-primary" onclick="downloadSelectedZip()" id="btnDownloadZip">Tải xuống ZIP hàng
+                        loạt</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table id="qrTable" class="qr-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;"><input type="checkbox" id="checkAll"
+                                    onchange="toggleCheckAll(this)"></th>
+                            <th style="width: 50px;">STT</th>
+                            <th>Nội dung / URL</th>
+                            <th style="width: 250px;">Tải xuống</th>
+                            <th style="width: 80px;">Xem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="qrTableBody">
+                        <!-- Rows will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="paginationContainer" class="pagination-container" style="display:none;"></div>
+        </div>
+    </main>
+
+    <!-- Footer Stats -->
+    <footer class="app-footer">
+        <div class="stats-container" id="statsContainer">
+            <div class="stat-box skeleton" id="stat-generated">
+                <span class="stat-label">Tổng QR Đã Tạo</span>
+                <span class="stat-value">-</span>
+            </div>
+            <div class="stat-box skeleton" id="stat-scans">
+                <span class="stat-label">Tổng Lượt Quét</span>
+                <span class="stat-value">-</span>
+            </div>
+            <div class="stat-box skeleton" id="stat-today-scans">
+                <span class="stat-label">Lượt Quét Hôm Nay</span>
+                <span class="stat-value">-</span>
+            </div>
+            <div class="stat-box skeleton" id="stat-last-updated">
+                <span class="stat-label">Cập Nhật Lần Cuối</span>
+                <span class="stat-value">-</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle">QR Preview</h3>
+            <div class="modal-qr-container">
+                <img id="modalQrImg" src="" alt="QR Preview">
+            </div>
+            <p id="modalUrl" class="modal-url"></p>
+            <div class="modal-actions">
+                <button class="btn-secondary icon-btn" id="modalBtnPng">Tải PNG</button>
+                <button class="btn-secondary icon-btn" id="modalBtnSvg">Tải SVG</button>
+                <button class="btn-secondary icon-btn" id="modalBtnHtml">Tải HTML</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Libraries -->
+    <script src="qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="script.js?v=3"></script>
+</body>
+
+</html>
