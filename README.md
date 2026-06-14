@@ -10,6 +10,7 @@
 
 <a name="english"></a>
 # Super QR Tool 🚀 (English)
+*👉 [🇻🇳 Đọc bằng Tiếng Việt (Read in Vietnamese)](#tiếng-việt)*
 
 Super QR Tool is a powerful, client-side only static web application that allows you to easily generate, customize, and bulk-download QR codes. It runs entirely in your web browser, requiring absolutely **no backend**, **no database**, and **no installation**.
 
@@ -35,7 +36,7 @@ Since this is a fully static web application, no Node.js environment or Web Serv
 ### Method 1: Direct Execution (No Server Needed)
 1. **Download the project**: Clone this repository or download it as a ZIP file.
    ```bash
-   git clone https://github.com/vonguyendang/qrCode-tool.git
+   git clone https://github.com/vonguyendang/super-qr-tool.git
    ```
 2. **Open the App**: Simply double-click the `index.html` file to open it in your preferred web browser (Chrome, Firefox, Safari). The app will work perfectly offline!
 
@@ -43,7 +44,7 @@ Since this is a fully static web application, no Node.js environment or Web Serv
 If you prefer to run it via a local server (to avoid any strict browser CORS issues when loading local assets):
 1. **Using Python (Built-in)**:
    ```bash
-   cd qrCode-tool
+   cd super-qr-tool
    python3 -m http.server 8000
    ```
    Then navigate to `http://localhost:8000` in your browser.
@@ -91,6 +92,7 @@ Super QR Tool is extremely lightweight and can be hosted on any static hosting p
 
 <a name="tiếng-việt"></a>
 # Super QR Tool 🚀 (Tiếng Việt)
+*👉 [🇬🇧 Read in English (Đọc bằng Tiếng Anh)](#english)*
 
 Super QR Tool là một công cụ web tĩnh cao cấp, đa tính năng và hoàn toàn miễn phí cho phép bạn tạo, tùy chỉnh và tải hàng loạt mã QR một cách chuyên nghiệp. Ứng dụng này chạy 100% trên trình duyệt của bạn, **không cần backend**, **không cần cơ sở dữ liệu** và **không yêu cầu cài đặt phần mềm**.
 
@@ -116,7 +118,7 @@ Vì đây là một ứng dụng web tĩnh thuần túy, bạn hoàn toàn khôn
 ### Cách 1: Chạy trực tiếp (Không cần Server)
 1. **Tải dự án**: Clone kho lưu trữ này hoặc tải về dưới dạng file ZIP.
    ```bash
-   git clone https://github.com/vonguyendang/qrCode-tool.git
+   git clone https://github.com/vonguyendang/super-qr-tool.git
    ```
 2. **Mở ứng dụng**: Chỉ cần nhấn đúp vào tệp `index.html` để mở bằng trình duyệt web của bạn (Chrome, Cốc Cốc, Safari...). Ứng dụng hoạt động hoàn hảo ngay cả khi không có kết nối mạng (Offline)!
 
@@ -124,7 +126,7 @@ Vì đây là một ứng dụng web tĩnh thuần túy, bạn hoàn toàn khôn
 Nếu bạn muốn chạy ứng dụng qua localhost (để tránh một số lỗi CORS khắt khe của trình duyệt khi load các file local):
 1. **Sử dụng Python (Có sẵn trên máy Mac/Linux)**:
    ```bash
-   cd qrCode-tool
+   cd super-qr-tool
    python3 -m http.server 8000
    ```
    Sau đó truy cập `http://localhost:8000` trên trình duyệt.
