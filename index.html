@@ -1,131 +1,445 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-	<meta charset="utf-8" />
-	<title>Free QR Code Generator: Create Custom QR Codes Online</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="keywords" content="QR code builder, Free barcode maker,  1D Barcode, 2D Barcode Creator, ">
-	<meta name=" description"
-		content="Free online QR code builder for url, text.  Add logos, frames, colors. Easy, quick, and completely free!">
-	<link rel="stylesheet" href="themes/css/public/css.css">
-	<link rel="stylesheet" href="themes/css/public/element-ui.css">
-	<link rel="stylesheet" href="themes/css/header.css">
-	<link rel="stylesheet" href="themes/css/footer.css">
-	<link rel="stylesheet" href="themes/css/code-generator-orgin.css">
-	<link rel="stylesheet" href="themes/css/barCodeSetting.css">
-	<link rel="stylesheet" href="themes/css/qrCodeSetting.css">
-	<script>
-		var lang = "en";
-	</script>
-	<script src="themes/js/public/vue.min.js" type="text/javascript"></script>
-	<script src="themes/js/public/vue-router.js" type="text/javascript"></script>
-	<script src="themes/js/public/axios.min.js" type="text/javascript"></script>
-	<script src="themes/js/public/element-ui.js" type="text/javascript"></script>
-	<script src="themes/js/public/jquery.min.js" type="text/javascript"></script>
-	<script src="themes/js/public/sha1.js" type="text/javascript"></script>
-	<script src="themes/js/public/md5.js" type="text/javascript"></script>
-	<script src="themes/js/public/bwip.js" type="text/javascript"></script>
-	<script src="themes/js/public/gif.js" type="text/javascript"></script>
-	<script src="themes/js/public/gif.worker.js" type="text/javascript"></script>
-	<script src="themes/js/public/imagetracer_v1.2.6.js" type="text/javascript"></script>
-	<script src="themes/js/public/jszip.min.js" type="text/javascript"></script>
-	<script src="themes/js/public/qrcode.min.js" type="text/javascript"></script>
-	<script src="themes/js/common/header.js" type="text/javascript"></script>
-	<script src="themes/js/common/request.js" type="text/javascript"></script>
-	<script src="themes/js/common/data.js" type="text/javascript"></script>
-	<script src="themes/js/common/codeData.js" type="text/javascript"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RMNSFYQDES"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-	<script src="themes/js/dist/code.min.js" type="text/javascript"></script>
+      gtag('config', 'G-RMNSFYQDES');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium QR Code Generator</title>
+    <link rel="shortcut icon" href="favicon_io/android-chrome-512x512.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="super_tabs.css">
+    <link rel="stylesheet" href="themes/css/public/element-ui.css">
+    <link rel="stylesheet" href="themes/css/code-generator-orgin.css">
+    <link rel="stylesheet" href="themes/css/barCodeSetting.css">
+    <link rel="stylesheet" href="themes/css/qrCodeSetting.css">
+    <style>
+        .el-drawer__body { overflow-y: auto; padding-bottom: 50px; }
+    </style>
+    <script>
+        // Bản vá (Monkey patch) cho Canvas để hỗ trợ phông nền trong suốt
+        const isTransparent = (style) => {
+            if (!style) return false;
+            if (typeof style !== 'string') return false; // could be CanvasGradient
+            style = style.replace(/\s/g, '').toLowerCase();
+            return style === 'transparent' || style === 'rgba(0,0,0,0)' || style === 'rgba(255,255,255,0)' || style.endsWith(',0)');
+        };
 
+        const originalFillRect = CanvasRenderingContext2D.prototype.fillRect;
+        CanvasRenderingContext2D.prototype.fillRect = function(x, y, w, h) {
+            if (isTransparent(this.fillStyle)) {
+                this.clearRect(x, y, w, h);
+            } else {
+                originalFillRect.call(this, x, y, w, h);
+            }
+        };
+
+        const originalFill = CanvasRenderingContext2D.prototype.fill;
+        CanvasRenderingContext2D.prototype.fill = function(rule) {
+            if (isTransparent(this.fillStyle)) {
+                const prevOp = this.globalCompositeOperation;
+                this.globalCompositeOperation = 'destination-out';
+                this.fillStyle = 'rgba(0,0,0,1)'; // solid black to erase
+                originalFill.call(this, rule);
+                this.globalCompositeOperation = prevOp;
+                this.fillStyle = 'rgba(0,0,0,0)'; // restore transparent
+            } else {
+                originalFill.call(this, rule);
+            }
+        };
+    </script>
+    <style type="text/css">
+        .tab-content input[type="datetime-local"],
+        .tab-content input[type="number"],
+        .tab-content select {
+            width: 100%;
+            height: 40px;
+            padding: 0 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #dcdfe6;
+            background-color: #ffffff;
+            font-size: 14px;
+            color: #606266;
+            outline: none;
+            transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+            box-sizing: border-box;
+        }
+        .tab-content input[type="datetime-local"]:focus,
+        .tab-content input[type="number"]:focus,
+        .tab-content select:focus {
+            border-color: #409EFF;
+        }
+        .tab-content input[type="number"]::-webkit-inner-spin-button, 
+        .tab-content input[type="number"]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
 </head>
-<style type="text/css">
-	.code-set-btngroup {
-		width: 100%;
-	}
-
-	/* Đã xóa #codeTextarea { height: 15vw; } để ưu tiên CSS trong code-generator-orgin.css */
-</style>
 
 <body>
+    <div id="app" v-cloak>
+        <header class="app-header" style="position: relative; display: flex; justify-content: flex-end; align-items: center; padding: 20px 40px;">
+            <div class="header-content" style="position: absolute; left: 50%; transform: translateX(-50%); text-align: center; width: 100%;">
+                <h1 style="margin:0;">{{ $t('header.title') }}</h1>
+                <p style="margin: 5px 0 0 0; opacity: 0.8;">{{ $t('bulk.placeholder').split('\n')[0] }}</p>
+            </div>
+            <div class="header-actions" style="position: relative; z-index: 10;">
+                <el-button type="primary" plain onclick="window.i18n.toggle()">
+                    <i class="el-icon-sort"></i> {{ $t('header.lang') }}
+                </el-button>
+            </div>
+        </header>
 
-	<body>
-		<div class="introduction-wrapper">
-			<div class="code-operate-desc">
-				<p class="operate-desc-title">Công cụ tạo mã QR Miễn phí & Chuyên nghiệp</p>
-				<div class="separator-line"></div>
-				<p class="operate-desc-text">Tạo mã **QR code chất lượng cao** cho URL, Văn bản, Email, WiFi, và nhiều
-					loại dữ liệu khác. Tùy chỉnh màu sắc, thêm logo, khung viền để tạo ra mã QR độc đáo, dễ dàng quét và
-					hoàn toàn miễn phí.</p>
-				<p class="operate-desc-text">Bắt đầu bằng cách nhập nội dung của bạn vào ô bên dưới, sau đó sử dụng nút
-					**Setting (Cài đặt)** để tùy chỉnh giao diện mã QR theo ý muốn!</p>
-			</div>
-		</div>
-		<div class="qr-code-main">
+        <main class="container">
+            
+        <div class="card">
+            <div class="tabs">
+                <button class="tab-button active" onclick="openTab(event, 'Website')">{{ $t('tabs.url') }}</button>
+                <button class="tab-button" onclick="openTab(event, 'VCard')">{{ $t('tabs.vcard') }}</button>
+                <button class="tab-button" onclick="openTab(event, 'Text')">{{ $t('modal.text') }}</button>
+                <button class="tab-button" onclick="openTab(event, 'Email')">{{ $t('tabs.email') }}</button>
+                <button class="tab-button" onclick="openTab(event, 'Social')">{{ $t('tabs.social') }}</button>
+                <button class="tab-button" onclick="openTab(event, 'Wifi')">{{ $t('tabs.wifi') }}</button>
+                <button class="tab-button" onclick="openTab(event, 'Phone')">{{ $t('tabs.phone') }}</button>
+                <button class="tab-button" onclick="openTab(event, 'SMS')">{{ $t('tabs.sms') }}</button>
+                <button class="tab-button" onclick="openTab(event, 'Location')">{{ $t('tabs.location') }}</button>
+                <button class="tab-button" onclick="openTab(event, 'Event')">{{ $t('tabs.event') }}</button>
+                <button class="tab-button" onclick="openTab(event, 'Crypto')">{{ $t('tabs.crypto') }}</button>
+                <button class="tab-button" onclick="openTab(event, 'App')">{{ $t('tabs.app') }}</button>
+            </div>
 
-			<div class="code-operate-container">
-				<div class="el-row" style="width: 100%;">
-					<div class="code-operate-col el-col el-col-24 el-col-xs-24 el-col-sm-24 el-col-md-24 el-col-lg-14">
-						<div class="code-operate-box code-form-operate-box">
-							<div class="code-operate-box-header">
-								<p class="code-operate-title">QR code data</p>
-								<img src="themes/img/setting.png"
-									onclick="handleOutsideButton('handleOpenQRCodeSetting')">
-							</div>
-							<div class="code-data-box-outer">
-								<div class="code-data-box">
-									<div class="code-data code-data-qr el-textarea">
-										<textarea autocomplete="off"
-											placeholder="Nhập văn bản hoặc URL bạn muốn chuyển thành QR code tại đây"
-											class="el-textarea__inner" style="resize: none; min-height: 33px;"
-											id="codeTextarea"></textarea>
-									</div>
-								</div>
-							</div>
-							<div class="code-set-btngroup" style="width: 100%;">
-								<button type="button" class="el-button el-button--default" onclick="getBarCodeData()">
-									<span>Create QR Code</span>
-								</button>
-								<button type="button" class="el-button el-button--default"
-									onclick="handleResetParameter('qrCode')">
-									<i class="el-icon-refresh-left"></i><span>Refresh</span>
-								</button>
-							</div>
-						</div>
-					</div>
-					<div class="code-operate-col el-col el-col-24 el-col-xs-24 el-col-sm-24 el-col-md-24 el-col-lg-10">
-						<div class="code-operate-box code-form-operate-box">
-							<div class="code-operate-box-header">
-								<p class="code-operate-title">Preview</p>
-								<img src="themes/img/copy.png" onclick="handleOutsideButton('handleOpenCopy')">
-							</div>
-							<div class="code-preview-box">
-								<img id="codeImg" class="code-yes" src="uploads/code-images/QR-code-data.png"
-									alt="text" />
-							</div>
-							<div class="code-set-btngroup">
-								<button type="button" class="code-dowload el-button el-button--default"
-									onclick="handleOutsideButton('handleDownload')"><span>Download</span></button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+            <!-- Logo Section -->
+            
+            <img id="codeImg" style="display:none;" />
 
+            <div class="tab-content" id="Website" style="display: block;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2 style="margin: 0;">{{ $t('content.titleWebsite') }}</h2>
+                    <button type="button" class="btn-primary" style="font-size: 0.95rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); border: none; border-radius: 8px; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);" onclick="handleOutsideButton('handleOpenQRCodeSetting')">
+                        <i class="el-icon-setting"></i> {{ $t('content.settingBtn') }}
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label>{{ $t('content.descWebsite') }}</label>
+                    <textarea id="websiteUrls" placeholder="https://example.com&#10;https://google.com"
+                        rows="5"></textarea>
+                </div>
+                <div class="form-group row-flex" style="align-items: center;">
+                    <label style="margin-bottom: 0;">{{ $t('content.importExcel') }}</label>
+                    <input type="file" id="excelInput" accept=".xlsx, .xls, .csv" hidden>
+                    <label for="excelInput" class="upload-btn" style="margin-bottom: 0;">{{ $t('content.btnChooseFile') }}</label>
+                    <button class="btn-secondary icon-btn" onclick="downloadTemplate()"
+                        style="padding: 0.5rem 1rem; font-size: 0.9rem;">{{ $t('content.btnDownloadTemplate') }}</button>
+                </div>
+                <div id="validationErrors" class="error-box" style="display: none;"></div>
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('website')"
+                    id="btn-generate-website">{{ $t('content.btnGenerate') }}</button>
+            </div>
 
-			<script>
-				$(document).ready(function () {
-					var firstUrl = localStorage.getItem("firstUrl");
-					if (!firstUrl) {
-						localStorage.setItem("firstUrl", window.location.href);
-					}
-				});
-			</script>
-			<link href="https://www.hprt.com/themes/styles/select2.css" rel="stylesheet" />
+            <div class="tab-content" id="VCard" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2 style="margin: 0;">{{ $t('form.titleVCard') }}</h2>
+                    <button type="button" class="btn-primary" style="font-size: 0.95rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); border: none; border-radius: 8px; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);" onclick="handleOutsideButton('handleOpenQRCodeSetting')">
+                        <i class="el-icon-setting"></i> {{ $t('content.settingBtn') }}
+                    </button>
+                </div>
+                <div class="grid-2">
+                    <input type="text" id="vcardFirstName" :placeholder="$t('form.firstName')">
+                    <input type="text" id="vcardLastName" :placeholder="$t('form.lastName')">
+                    <input type="text" id="vcardPhone" :placeholder="$t('form.phone')">
+                    <input type="email" id="vcardEmail" :placeholder="$t('form.email')">
+                    <input type="text" id="vcardCompany" :placeholder="$t('form.company')">
+                    <input type="text" id="vcardJobTitle" :placeholder="$t('form.jobTitle')">
+                    <input type="text" id="vcardCompanyPhone" :placeholder="$t('form.companyPhone')">
+                    <input type="text" id="vcardFax" :placeholder="$t('form.fax')">
+                    <input type="email" id="vcardCompanyEmail" :placeholder="$t('form.companyEmail')">
+                    <input type="text" id="vcardCompanyWebsite" :placeholder="$t('form.companyWebsite')">
+                    <input type="text" id="vcardStreet" :placeholder="$t('form.street')">
+                    <input type="text" id="vcardCity" :placeholder="$t('form.city')">
+                    <input type="text" id="vcardState" :placeholder="$t('form.state')">
+                    <input type="text" id="vcardCountry" :placeholder="$t('form.country')">
+                    <input type="text" id="vcardZip" :placeholder="$t('form.zipCode')">
+                    <input type="text" id="vcardPostalCode" :placeholder="$t('form.postalCode')">
+                </div>
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('vcard')">Generate QR
+                    Code</button>
+            </div>
 
-			<div class="code-operate-container" id="app">
+            <div class="tab-content" id="Text" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2 style="margin: 0;">{{ $t('form.titleText') }}</h2>
+                    <button type="button" class="btn-primary" style="font-size: 0.95rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); border: none; border-radius: 8px; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);" onclick="handleOutsideButton('handleOpenQRCodeSetting')">
+                        <i class="el-icon-setting"></i> {{ $t('content.settingBtn') }}
+                    </button>
+                </div>
+                <textarea id="textContent" :placeholder="$t('form.enterText')" rows="4"></textarea>
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('text')">Generate QR Code</button>
+            </div>
 
-				<div class="qrcode-dialog" v-cloak>
+            <div class="tab-content" id="Email" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2 style="margin: 0;">{{ $t('form.titleEmail') }}</h2>
+                    <button type="button" class="btn-primary" style="font-size: 0.95rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); border: none; border-radius: 8px; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);" onclick="handleOutsideButton('handleOpenQRCodeSetting')">
+                        <i class="el-icon-setting"></i> {{ $t('content.settingBtn') }}
+                    </button>
+                </div>
+                <input type="email" id="emailAddress" :placeholder="$t('form.emailAddress')">
+                <input type="text" id="emailSubject" :placeholder="$t('form.subject')">
+                <textarea id="emailBody" :placeholder="$t('form.body')" rows="4"></textarea>
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('email')">Generate QR
+                    Code</button>
+            </div>
+
+            <div class="tab-content" id="Social" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2 style="margin: 0;">{{ $t('form.titleSocial') }}</h2>
+                    <button type="button" class="btn-primary" style="font-size: 0.95rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); border: none; border-radius: 8px; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);" onclick="handleOutsideButton('handleOpenQRCodeSetting')">
+                        <i class="el-icon-setting"></i> {{ $t('content.settingBtn') }}
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label>{{ $t('form.selectNetwork') }}</label>
+                    <select id="socialNetwork" onchange="updateSocialPlaceholder()" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #dcdfe6;">
+                        <option value="facebook">Facebook</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="zalo">Zalo</option>
+                        <option value="whatsapp">WhatsApp</option>
+                        <option value="twitter">X (Twitter)</option>
+                        <option value="linkedin">LinkedIn</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <input type="text" id="socialLink" :placeholder="$t('form.socialLink')">
+                </div>
+                
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('social')" id="btn-generate-social">{{ $t('content.btnGenerate') }}</button>
+            </div>
+            
+            <script>
+                const socialPrefixes = {
+                    facebook: 'https://facebook.com/',
+                    youtube: 'https://youtube.com/@',
+                    instagram: 'https://instagram.com/',
+                    tiktok: 'https://tiktok.com/@',
+                    twitter: 'https://x.com/',
+                    linkedin: 'https://linkedin.com/in/',
+                    zalo: '',
+                    whatsapp: ''
+                };
+
+                function updateSocialPlaceholder() {
+                    const network = document.getElementById('socialNetwork').value;
+                    const input = document.getElementById('socialLink');
+                    const isPhone = ['zalo', 'whatsapp'].includes(network);
+                    
+                    if (window.i18n && window.i18n.t) {
+                        input.placeholder = isPhone ? window.i18n.t('form.socialPhone') : window.i18n.t('form.socialLink');
+                    } else {
+                        input.placeholder = isPhone ? "Phone Number" : "Profile URL";
+                    }
+
+                    // Auto-fill prefix
+                    const currentVal = input.value.trim();
+                    const knownPrefixes = Object.values(socialPrefixes).filter(p => p !== '');
+                    const isKnownPrefix = knownPrefixes.includes(currentVal) || currentVal === '';
+                    
+                    if (isKnownPrefix) {
+                        input.value = socialPrefixes[network] || '';
+                    }
+                }
+                
+                // Initialize default value for the first option (Facebook) on load
+                window.addEventListener('DOMContentLoaded', () => {
+                    const input = document.getElementById('socialLink');
+                    if(input && !input.value) {
+                        input.value = 'https://facebook.com/';
+                    }
+                });
+            </script>
+
+            <div class="tab-content" id="Wifi" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2 style="margin: 0;">{{ $t('form.titleWifi') }}</h2>
+                    <button type="button" class="btn-primary" style="font-size: 0.95rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); border: none; border-radius: 8px; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);" onclick="handleOutsideButton('handleOpenQRCodeSetting')">
+                        <i class="el-icon-setting"></i> {{ $t('content.settingBtn') }}
+                    </button>
+                </div>
+                <input type="text" id="wifiName" :placeholder="$t('form.wifiName')">
+                <input type="text" id="wifiPassword" :placeholder="$t('form.wifiPassword')">
+                <select id="wifiEncryption">
+                    <option value="nopass">No Encryption</option>
+                    <option value="wep">WEP</option>
+                    <option value="wpa">WPA/WPA2</option>
+                </select>
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('wifi')">Generate QR Code</button>
+            </div>
+
+            <div class="tab-content" id="Phone" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2 style="margin: 0;">{{ $t('form.titlePhone') }}</h2>
+                    <button type="button" class="btn-primary" style="font-size: 0.95rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); border: none; border-radius: 8px; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);" onclick="handleOutsideButton('handleOpenQRCodeSetting')">
+                        <i class="el-icon-setting"></i> {{ $t('content.settingBtn') }}
+                    </button>
+                </div>
+                <input type="text" id="phoneNumber" :placeholder="$t('form.phoneFormat')">
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('phone')">Generate QR
+                    Code</button>
+            </div>
+
+            <div class="tab-content" id="SMS" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2 style="margin: 0;">{{ $t('form.titleSMS') }}</h2>
+                    <button type="button" class="btn-primary" style="font-size: 0.95rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); border: none; border-radius: 8px; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);" onclick="handleOutsideButton('handleOpenQRCodeSetting')">
+                        <i class="el-icon-setting"></i> {{ $t('content.settingBtn') }}
+                    </button>
+                </div>
+                <input type="text" id="smsPhoneNumber" :placeholder="$t('form.phone')">
+                <textarea id="smsMessage" :placeholder="$t('form.message')" rows="3"></textarea>
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('sms')">{{ $t('content.btnGenerate') }}</button>
+            </div>
+
+            <!-- LOCATION TAB -->
+            <div class="tab-content" id="Location" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2 style="margin: 0;">{{ $t('form.titleLocation') }}</h2>
+                    <button type="button" class="btn-primary" style="font-size: 0.95rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); border: none; border-radius: 8px; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);" onclick="handleOutsideButton('handleOpenQRCodeSetting')">
+                        <i class="el-icon-setting"></i> {{ $t('content.settingBtn') }}
+                    </button>
+                </div>
+                <div class="form-group row-flex">
+                    <input type="text" id="locLatitude" :placeholder="$t('form.latitude')" style="flex: 1;">
+                    <input type="text" id="locLongitude" :placeholder="$t('form.longitude')" style="flex: 1;">
+                </div>
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('location')">{{ $t('content.btnGenerate') }}</button>
+            </div>
+
+            <!-- EVENT TAB -->
+            <div class="tab-content" id="Event" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2 style="margin: 0;">{{ $t('form.titleEvent') }}</h2>
+                    <button type="button" class="btn-primary" style="font-size: 0.95rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); border: none; border-radius: 8px; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);" onclick="handleOutsideButton('handleOpenQRCodeSetting')">
+                        <i class="el-icon-setting"></i> {{ $t('content.settingBtn') }}
+                    </button>
+                </div>
+                <input type="text" id="eventName" :placeholder="$t('form.eventName')">
+                <div class="form-group row-flex">
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.85rem; color: #666; margin-bottom: 4px; display: block;">{{ $t('form.eventStart') }}</label>
+                        <input type="datetime-local" id="eventStart" style="width: 100%;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.85rem; color: #666; margin-bottom: 4px; display: block;">{{ $t('form.eventEnd') }}</label>
+                        <input type="datetime-local" id="eventEnd" style="width: 100%;">
+                    </div>
+                </div>
+                <input type="text" id="eventLocation" :placeholder="$t('form.eventLocation')">
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('event')">{{ $t('content.btnGenerate') }}</button>
+            </div>
+
+            <!-- CRYPTO TAB -->
+            <div class="tab-content" id="Crypto" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2 style="margin: 0;">{{ $t('form.titleCrypto') }}</h2>
+                    <button type="button" class="btn-primary" style="font-size: 0.95rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); border: none; border-radius: 8px; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);" onclick="handleOutsideButton('handleOpenQRCodeSetting')">
+                        <i class="el-icon-setting"></i> {{ $t('content.settingBtn') }}
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label>{{ $t('form.cryptoCurrency') }}</label>
+                    <select id="cryptoCurrency" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #dcdfe6;">
+                        <option value="bitcoin">Bitcoin (BTC)</option>
+                        <option value="ethereum">Ethereum (ETH)</option>
+                    </select>
+                </div>
+                <input type="text" id="cryptoAddress" :placeholder="$t('form.cryptoAddress')">
+                <input type="number" id="cryptoAmount" :placeholder="$t('form.cryptoAmount')" step="any">
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('crypto')">{{ $t('content.btnGenerate') }}</button>
+            </div>
+
+            <!-- APP TAB -->
+            <div class="tab-content" id="App" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2 style="margin: 0;">{{ $t('form.titleApp') }}</h2>
+                    <button type="button" class="btn-primary" style="font-size: 0.95rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); border: none; border-radius: 8px; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);" onclick="handleOutsideButton('handleOpenQRCodeSetting')">
+                        <i class="el-icon-setting"></i> {{ $t('content.settingBtn') }}
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label>{{ $t('form.appStore') }}</label>
+                    <select id="appStoreType" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #dcdfe6;">
+                        <option value="appstore">Apple App Store</option>
+                        <option value="playstore">Google Play Store</option>
+                    </select>
+                </div>
+                <input type="text" id="appLink" :placeholder="$t('form.appLink')">
+                <p style="font-size: 0.85rem; color: #666; margin-top: -5px; margin-bottom: 15px;">
+                    * {{ $t('form.appHint') }}
+                </p>
+                <button class="btn-primary generate-btn" onclick="generateBulkQRCodes('app')">{{ $t('content.btnGenerate') }}</button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="card" style="display: none;">
+            <div class="results-header">
+                <h2>{{ $t('modal.title') }}</h2>
+                <div class="batch-actions" style="align-items: center;">
+                    <button class="btn-secondary" onclick="selectAll()">{{ $t('bulk.selectAll') }}</button>
+                    <button class="btn-secondary" onclick="deselectAll()">{{ $t('bulk.deselectAll') }}</button>
+                    <div class="zip-options" style="display: flex; gap: 1rem; margin-right: 1rem;">
+                        <label
+                            style="display: flex; align-items: center; gap: 0.2rem; font-size: 0.9rem; cursor: pointer;"><input
+                                type="checkbox" id="zipIncludeImg" checked> <span id="zipImgLabel">PNG</span></label>
+                        <label
+                            style="display: flex; align-items: center; gap: 0.2rem; font-size: 0.9rem; cursor: pointer;"><input
+                                type="checkbox" id="zipIncludeHtml"> HTML</label>
+                    </div>
+                    <span id="selectedBadge" class="selected-badge" style="display:none;"></span>
+                    <button class="btn-primary" onclick="downloadSelectedZip()" id="btnDownloadZip">Tải xuống ZIP hàng
+                        loạt</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table id="qrTable" class="qr-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;"><input type="checkbox" id="checkAll"
+                                    onchange="toggleCheckAll(this)"></th>
+                            <th style="width: 50px;">{{ $t('bulk.colID') }}</th>
+                            <th>Nội dung / URL</th>
+                            <th style="width: 250px;">Tải xuống</th>
+                            <th style="width: 80px;">Xem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="qrTableBody">
+                        <!-- Rows will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="paginationContainer" class="pagination-container" style="display:none;"></div>
+        </div>
+    
+        </main>
+        
+        <div class="qrcode-dialog" v-cloak>
 
 					<el-dialog v-if="!qrcode_showDrawer" v-cloak class="code-dialog-box"
 						:visible.sync="qrcode_dialogVisible" width="1146px" :close-on-click-modal="false"
@@ -150,7 +464,7 @@
 										  : '',
 									  color: currentStyleClassIndex == index ? '#2255F4' : '',
 									}" @click="handleStyleClass(index)">
-													{{ item.class_name }}
+													{{ item.class_name === '经典样式' ? $t('modal.styleClassic') : item.class_name === '简约样式' ? $t('modal.styleSimple') : item.class_name === '黑白样式' ? $t('modal.styleMono') : item.class_name }}
 												</div>
 											</div>
 											<div class="style-box">
@@ -176,7 +490,7 @@
 									<el-tab-pane label="Logo" name="logo_attrs"
 										:disabled="qrCodeParameter.codeType == 'qrcode' ? false : true">
 										<div>
-											<p class="class-title">Select Logo</p>
+											<p class="class-title">{{ $t('modal.selectLogo') }}</p>
 											<div class="select-box">
 												<div class="select-box-item select-box-effect" :style="{
 									  border:
@@ -231,7 +545,7 @@
 											</div>
 
 											<div v-if="logoStyleImg">
-												<p class="class-title">Logo effect</p>
+												<p class="class-title">{{ $t('modal.logoEffect') }}</p>
 												<div class="select-box">
 													<div class="select-box-item select-box-effect" :style="{
 										border:
@@ -280,7 +594,7 @@
 									<el-tab-pane label="Border" name="border_attrs"
 										:disabled="qrCodeParameter.codeType == 'qrcode' ? false : true">
 										<div>
-											<p class="class-title">Select the border</p>
+											<p class="class-title">{{ $t('modal.selectBorder') }}</p>
 											<div class="select-box border-select-box">
 												<div class="select-box-item select-box-effect" :style="{
 									  border: !qrCodeParameter.border
@@ -308,7 +622,7 @@
 											</div>
 
 											<div v-if="currentBorderIndex > -1">
-												<p class="class-title">Outline color</p>
+												<p class="class-title">{{ $t('modal.outlineColor') }}</p>
 												<div style="display: flex; align-items: center">
 													<el-color-picker v-model="qrCodeParameter.borderColor"
 														@change="handleSetBorderColor"></el-color-picker>
@@ -323,7 +637,7 @@
 									<el-tab-pane label="Code points" name="codePoints_attrs"
 										:disabled="qrCodeParameter.codeType == 'qrcode' ? false : true">
 										<div>
-											<p class="class-title">Code points</p>
+											<p class="class-title">{{ $t('modal.codePoints') }}</p>
 											<div class="select-box codePoint-select-box">
 												<div v-for="(item, index) in codePointList" :key="index"
 													class="select-box-item" :style="{
@@ -337,7 +651,7 @@
 											</div>
 											<div class="code-point-row">
 												<div class="code-point-col">
-													<p class="class-title">Zoom</p>
+													<p class="class-title">{{ $t('modal.zoom') }}</p>
 													<div class="code-point-slider">
 														<el-slider v-model="qrCodeParameter.codePointScale" :min="30"
 															:max="100" @change=" getQRCode"></el-slider>
@@ -353,7 +667,7 @@
 													</div>
 												</div>
 												<div class="code-point-col">
-													<p class="class-title">Opacity</p>
+													<p class="class-title">{{ $t('modal.opacity') }}</p>
 													<div class="code-point-slider">
 														<el-slider v-model="qrCodeParameter.codePointOpacity" :min="30"
 															:max="100" @change=" getQRCode"></el-slider>
@@ -369,7 +683,7 @@
 													</div>
 												</div>
 											</div>
-											<p class="class-title">Code eyes</p>
+											<p class="class-title">{{ $t('modal.codeEyes') }}</p>
 											<div class="style-class-box">
 												<div v-for="(item, index) in codeEyesList" :key="index"
 													class="select-box-item Buttonhole" :style="{
@@ -388,13 +702,13 @@
 										:disabled="qrCodeParameter.codeType == 'qrcode' ? false : true">
 										<div>
 											<el-radio-group v-model="qrCodeParameter.foreType" class="radio-box">
-												<el-radio :label="0">Solid color</el-radio>
-												<el-radio :label="1">Gradient color</el-radio>
-												<el-radio :label="2">Foreground diagram</el-radio>
+												<el-radio :label="0">{{ $t('modal.solidColor') }}</el-radio>
+												<el-radio :label="1">{{ $t('modal.gradientColor') }}</el-radio>
+												<el-radio :label="2">{{ $t('modal.foregroundDiagram') }}</el-radio>
 											</el-radio-group>
 
 											<div v-if="qrCodeParameter.foreType == 2" class="colorImg-container">
-												<p class="class-title">Recommended gallery</p>
+												<p class="class-title">{{ $t('modal.recommendedGallery') }}</p>
 												<div class="select-box colorImg-select-box">
 
 													<div v-if="!qrCodeParameter.uploadForeImgUrl"
@@ -434,11 +748,11 @@
 												</div>
 												<el-checkbox v-model="qrCodeParameter.setEyeColor"
 													class="color-checkbox" style="margin: 0" @change=" getQRCode">
-													Apply to the code eyes </el-checkbox>
+													{{ $t('modal.applyToCodeEyes') }}</el-checkbox>
 											</div>
 
 											<div v-else>
-												<p class="class-title">Recommended colors</p>
+												<p class="class-title">{{ $t('modal.recommendedColors') }}</p>
 												<div class="select-box color-container">
 													<div v-if="qrCodeParameter.foreType == 0" class="color-box"
 														v-for="color in solidColor" :key="color" :style="{
@@ -475,7 +789,7 @@
 									qrCodeParameter.foreType == 0 ||
 									qrCodeParameter.foreType == 1
 								  ">
-												<p class="class-title">Custom colors</p>
+												<p class="class-title">{{ $t('modal.customColors') }}</p>
 												<div class="custom-color">
 													<el-color-picker v-model="qrCodeParameter.foreColor1"
 														@change=" getQRCode">
@@ -487,36 +801,36 @@
 													</el-color-picker>
 													<el-checkbox v-model="qrCodeParameter.setEyeColor"
 														class="color-checkbox" @change=" getQRCode">
-														Apply to the code eyes </el-checkbox>
+														{{ $t('modal.applyToCodeEyes') }}</el-checkbox>
 												</div>
 											</div>
 
 											<div v-if="qrCodeParameter.foreType == 1">
-												<p class="class-title">Gradient direction</p>
+												<p class="class-title">{{ $t('modal.gradientDirection') }}</p>
 
 												<el-radio-group v-model="qrCodeParameter.gradientWay" class="radio-box"
 													@change=" getQRCode">
-													<el-radio :label="0">Vertical</el-radio>
-													<el-radio :label="1">Horizontal</el-radio>
-													<el-radio :label="2">Diagonal</el-radio>
-													<el-radio :label="3">Center</el-radio>
+													<el-radio :label="0">{{ $t('modal.vertical') }}</el-radio>
+													<el-radio :label="1">{{ $t('modal.horizontal') }}</el-radio>
+													<el-radio :label="2">{{ $t('modal.diagonal') }}</el-radio>
+													<el-radio :label="3">{{ $t('modal.center') }}</el-radio>
 												</el-radio-group>
 											</div>
 
 											<div class="color-select-box">
-												<p class="class-title">Background color</p>
-												<el-color-picker v-model="qrCodeParameter.background"
+												<p class="class-title">{{ $t('modal.codeBackground') }}</p>
+												<el-color-picker show-alpha v-model="qrCodeParameter.background"
 													@change=" getQRCode">
 												</el-color-picker>
 											</div>
 											<div style="display: flex; align-items: center">
 												<div>
-													<p class="class-title">Code inside the eye</p>
+													<p class="class-title">{{ $t('modal.eyeInColor') }}</p>
 													<el-color-picker v-model="qrCodeParameter.eyeInColor"
 														@change="handleSetCodeEyesColor"></el-color-picker>
 												</div>
 												<div class="color-select-right-box">
-													<p class="class-title">Code outside the eye</p>
+													<p class="class-title">{{ $t('modal.eyeOutColor') }}</p>
 													<el-color-picker v-model="qrCodeParameter.eyeOutColor"
 														@change="handleSetCodeEyesColor"></el-color-picker>
 												</div>
@@ -529,7 +843,7 @@
 										<div>
 											<div class="flex-row">
 												<div class="flex-col">
-													<p class="class-title">Size</p>
+													<p class="class-title">{{ $t('modal.size') }}</p>
 													<el-input-number style="width: 100%"
 														v-model="qrCodeParameter.fontSize" controls-position="right"
 														:min="16" :max="48" @change=" getQRCode" @blur="
@@ -539,67 +853,67 @@
 									  "></el-input-number>
 												</div>
 												<div class="flex-col">
-													<p class="class-title">Font</p>
+													<p class="class-title">{{ $t('modal.font') }}</p>
 													<el-select style="width: 100%" v-model="qrCodeParameter.fontFamily"
 														placeholder="Please select" @change=" getQRCode">
-														<el-option label="宋体" value="SimSun"></el-option>
-														<el-option label="黑体" value="SimHei"></el-option>
-														<el-option label="楷体" value="KaiTi"></el-option>
+														<el-option :label="$t('modal.fontSerif')" value="SimSun"></el-option>
+														<el-option :label="$t('modal.fontSans')" value="SimHei"></el-option>
+														<el-option :label="$t('modal.fontBrush')" value="KaiTi"></el-option>
 													</el-select>
 												</div>
 												<div class="flex-col">
-													<p class="class-title">Text color</p>
+													<p class="class-title">{{ $t('modal.textColor') }}</p>
 													<el-color-picker v-model="qrCodeParameter.fontColor"
 														@change=" getQRCode">
 													</el-color-picker>
 												</div>
 											</div>
 											<div class="add-text-box">
-												<p class="class-title">Add text
-												</p>
+												<p class="class-title">{{ $t('modal.addText') }}
+</p>
 												<el-input class="text-input-box" v-model="qrCodeParameter.textContent1"
-													placeholder="Enter the first line of text you want to add"></el-input>
+													:placeholder="$t('modal.enterFirstLine')"></el-input>
 												<div style="display: flex">
 													<el-input class="text-input-box"
 														v-model="qrCodeParameter.textContent2"
-														placeholder="Please enter the second line of text you want to add">
+														:placeholder="$t('modal.enterSecondLine')">
 													</el-input>
 													<el-button class="text-confirm" type="text" @click=" getQRCode">
 													</el-button>
 													<el-button class="text-confirm"
 														style="color: #929293 !important; margin-left: 12px" type="text"
-														@click="handleClear()">Clear</el-button>
+														@click="handleClear()">{{ $t('modal.clear') }}</el-button>
 												</div>
 											</div>
 											<div>
-												<p class="class-title">Text position</p>
+												<p class="class-title">{{ $t('modal.textPosition') }}</p>
 												<el-radio-group v-model="qrCodeParameter.textPoistion" class="radio-box"
 													@change=" getQRCode">
-													<el-radio :label="2">Code outside</el-radio>
-													<el-radio :label="1">Code in the middle</el-radio>
+													<el-radio :label="2">{{ $t('modal.codeOutside') }}</el-radio>
+													<el-radio :label="1">{{ $t('modal.codeInMiddle') }}</el-radio>
 												</el-radio-group>
 											</div>
 										</div>
 									</el-tab-pane>
 
-									<el-tab-pane label="Other settings" name="other_attrs">
+									<el-tab-pane :label="$t('modal.otherSettings')" name="other_attrs">
 										<div class="other-container">
 											<div class="flex-row">
 												<div class="flex-col-other">
-													<p class="class-title">QR code margins</p>
+													<p class="class-title">{{ $t('modal.margins') }}</p>
 													<el-select style="width: 100%" v-model="qrCodeParameter.margin"
 														placeholder="Please select"
 														:disabled="qrCodeParameter.codeType != 'qrcode'"
 														@change=" getQRCode">
-														<el-option label="None" :value="0"></el-option>
-														<el-option label="1 color block" :value="1"></el-option>
-														<el-option label="2 color block" :value="2"></el-option>
-														<el-option label="3 color block" :value="3"></el-option>
-														<el-option label="4 color block" :value="4"></el-option>
+														<el-option :label="$t('modal.marginNone')" :value="0"></el-option>
+														<el-option :label="$t('modal.margin1')" :value="1"></el-option>
+														<el-option :label="$t('modal.margin2')" :value="2"></el-option>
+														<el-option :label="$t('modal.margin3')" :value="3"></el-option>
+														<el-option :label="$t('modal.margin4')" :value="4"></el-option>
 													</el-select>
 												</div>
 												<div class="flex-col-other">
-													<p class="class-title">Error correction rate</p>
+													<p class="class-title">{{ $t('modal.correction') }}</p>
 
 													<el-input-number v-if="
 										qrCodeParameter.codeType == 'azteccode' ||
@@ -623,14 +937,17 @@
 												</div>
 											</div>
 											<div class="ratio-box">
-												<p class="class-title">Image resolution</p>
+												<p class="class-title">{{ $t('modal.resolution') }}</p>
 												<el-select style="width: 100%" v-model="qrCodeParameter.ResolutionRatio"
 													placeholder="Please select" @change=" getQRCode">
-													<el-option label="96" :value="0"></el-option>
+													<el-option :label="$t('modal.dpi72')" :value="72"></el-option>
+													<el-option :label="$t('modal.dpi96')" :value="0"></el-option>
+													<el-option :label="$t('modal.dpi150')" :value="150"></el-option>
+													<el-option :label="$t('modal.dpi300')" :value="300"></el-option>
 												</el-select>
 											</div>
 											<div>
-												<p class="class-title">Image format</p>
+												<p class="class-title">{{ $t('modal.format') }}</p>
 												<el-select style="width: 100%" v-model="qrCodeParameter.ImageType"
 													placeholder="Please select" @change=" getQRCode">
 													<el-option label="JPG" :value="0"></el-option>
@@ -645,15 +962,15 @@
 							</div>
 							<div>
 								<div class="preview-container" v-loading="loading">
-
 									<img v-if="code_img" :src="code_img" />
 									<p @click=" handleResetParameter('qrCode')">
 										<i class="el-icon-refresh-left"></i>Reset
 									</p>
 								</div>
-								<div class="preview-down-btn">
-									<el-button @click="handleDownload()">Download</el-button>
+								<div style="text-align: center; margin-top: 24px;">
+									<el-button type="primary" style="width: 100%; height: 48px; border-radius: 8px; font-weight: 600; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(34,85,244,0.3);" @click="handleCloseDialog">{{ $t('modal.close') }}</el-button>
 								</div>
+
 							</div>
 						</div>
 					</el-dialog>
@@ -682,7 +999,7 @@
 										: '',
 									color: currentStyleClassIndex == index ? '#2255F4' : '',
 								  }" @click="handleStyleClass(index)">
-												{{ item.class_name }}
+												{{ item.class_name === '经典样式' ? $t('modal.styleClassic') : item.class_name === '简约样式' ? $t('modal.styleSimple') : item.class_name === '黑白样式' ? $t('modal.styleMono') : item.class_name }}
 											</div>
 										</div>
 										<el-row class="style-box">
@@ -710,7 +1027,7 @@
 								<el-tab-pane label="Logo" name="logo_attrs"
 									:disabled="qrCodeParameter.codeType == 'qrcode' ? false : true">
 									<div>
-										<p class="class-title">Select Logo</p>
+										<p class="class-title">{{ $t('modal.selectLogo') }}</p>
 										<el-row class="select-box">
 											<el-col :span="6" class="style-box-item-outer">
 												<div class="select-box-item select-box-effect" :style="{
@@ -771,7 +1088,7 @@
 										</el-row>
 
 										<div v-if="logoStyleImg">
-											<p class="class-title">Logo effect</p>
+											<p class="class-title">{{ $t('modal.logoEffect') }}</p>
 											<el-row class="select-box">
 												<el-col :span="6" class="style-box-item-outer">
 													<div class="select-box-item select-box-effect" :style="{
@@ -826,7 +1143,7 @@
 								<el-tab-pane label="Border" name="border_attrs"
 									:disabled="qrCodeParameter.codeType == 'qrcode' ? false : true">
 									<div>
-										<p class="class-title">Select the border</p>
+										<p class="class-title">{{ $t('modal.selectBorder') }}</p>
 										<el-row class="select-box border-select-box">
 											<el-col :span="6" class="style-box-item-outer">
 												<div class="select-box-item select-box-effect" :style="{
@@ -858,7 +1175,7 @@
 										</el-row>
 
 										<div v-if="currentBorderIndex > -1">
-											<p class="class-title">Outline color</p>
+											<p class="class-title">{{ $t('modal.outlineColor') }}</p>
 											<div class="custom-color">
 												<el-color-picker v-model="qrCodeParameter.borderColor"
 													@change="handleSetBorderColor"></el-color-picker>
@@ -873,7 +1190,7 @@
 								<el-tab-pane label="Code points" name="codePoints_attrs"
 									:disabled="qrCodeParameter.codeType == 'qrcode' ? false : true">
 									<div>
-										<p class="class-title">Code points</p>
+										<p class="class-title">{{ $t('modal.codePoints') }}</p>
 										<el-row class="select-box codePoint-select-box">
 											<el-col :span="6" v-for="(item, index) in codePointList" :key="index"
 												class="style-box-item-outer">
@@ -889,7 +1206,7 @@
 										</el-row>
 										<div class="code-point-row">
 											<div class="code-point-col">
-												<p class="class-title">Zoom</p>
+												<p class="class-title">{{ $t('modal.zoom') }}</p>
 												<div class="code-point-slider">
 													<el-slider v-model="qrCodeParameter.codePointScale" :min="30"
 														:max="100" @change="getQRCode"></el-slider>
@@ -905,7 +1222,7 @@
 												</div>
 											</div>
 											<div class="code-point-col">
-												<p class="class-title">Opacity</p>
+												<p class="class-title">{{ $t('modal.opacity') }}</p>
 												<div class="code-point-slider">
 													<el-slider v-model="qrCodeParameter.codePointOpacity" :min="30"
 														:max="100" @change="getQRCode"></el-slider>
@@ -921,7 +1238,7 @@
 												</div>
 											</div>
 										</div>
-										<p class="class-title">Code eyes</p>
+										<p class="class-title">{{ $t('modal.codeEyes') }}</p>
 										<el-row class="select-box codePoint-select-box">
 											<el-col :span="6" v-for="(item, index) in codeEyesList" :key="index"
 												class="style-box-item-outer">
@@ -942,13 +1259,13 @@
 									:disabled="qrCodeParameter.codeType == 'qrcode' ? false : true">
 									<div>
 										<el-radio-group v-model="qrCodeParameter.foreType" class="radio-box">
-											<el-radio :label="0">Solid color</el-radio>
-											<el-radio :label="1">Gradient color</el-radio>
-											<el-radio :label="2">Foreground diagram</el-radio>
+											<el-radio :label="0">{{ $t('modal.solidColor') }}</el-radio>
+											<el-radio :label="1">{{ $t('modal.gradientColor') }}</el-radio>
+											<el-radio :label="2">{{ $t('modal.foregroundDiagram') }}</el-radio>
 										</el-radio-group>
 
 										<div v-if="qrCodeParameter.foreType == 2" class="colorImg-container">
-											<p class="class-title">Recommended gallery</p>
+											<p class="class-title">{{ $t('modal.recommendedGallery') }}</p>
 											<el-row class="select-box colorImg-select-box">
 												<el-col :span="6" class="style-box-item-outer">
 
@@ -992,11 +1309,11 @@
 											</el-row>
 											<el-checkbox v-model="qrCodeParameter.setEyeColor" class="color-checkbox"
 												style="margin: 0" @change=" getQRCode">
-												Apply to the code eyes </el-checkbox>
+												{{ $t('modal.applyToCodeEyes') }}</el-checkbox>
 										</div>
 
 										<div v-else>
-											<p class="class-title">Recommended colors</p>
+											<p class="class-title">{{ $t('modal.recommendedColors') }}</p>
 											<div class="select-box color-container">
 
 												<div v-if="qrCodeParameter.foreType == 0" class="color-box"
@@ -1033,7 +1350,7 @@
 										<div class="color-select-box" v-if="
 								  qrCodeParameter.foreType == 0 || qrCodeParameter.foreType == 1
 								">
-											<p class="class-title">Custom colors</p>
+											<p class="class-title">{{ $t('modal.customColors') }}</p>
 											<div style="display: flex; align-items: center">
 												<el-color-picker v-model="qrCodeParameter.foreColor1"
 													@change=" getQRCode">
@@ -1045,34 +1362,34 @@
 													@change=" getQRCode"></el-color-picker>
 												<el-checkbox v-model="qrCodeParameter.setEyeColor"
 													class="color-checkbox" @change=" getQRCode">
-													Apply to the code eyes </el-checkbox>
+													{{ $t('modal.applyToCodeEyes') }}</el-checkbox>
 											</div>
 										</div>
 
 										<div v-if="qrCodeParameter.foreType == 1">
-											<p class="class-title">Gradient direction</p>
+											<p class="class-title">{{ $t('modal.gradientDirection') }}</p>
 											<el-radio-group v-model="qrCodeParameter.gradientWay" class="radio-box"
 												@change=" getQRCode">
-												<el-radio :label="0">Vertical</el-radio>
-												<el-radio :label="1">Horizontal</el-radio>
-												<el-radio :label="2">Diagonal</el-radio>
-												<el-radio :label="3">Center</el-radio>
+												<el-radio :label="0">{{ $t('modal.vertical') }}</el-radio>
+												<el-radio :label="1">{{ $t('modal.horizontal') }}</el-radio>
+												<el-radio :label="2">{{ $t('modal.diagonal') }}</el-radio>
+												<el-radio :label="3">{{ $t('modal.center') }}</el-radio>
 											</el-radio-group>
 										</div>
 
 										<div class="color-select-box">
-											<p class="class-title">Background color</p>
-											<el-color-picker v-model="qrCodeParameter.background" @change=" getQRCode">
+											<p class="class-title">{{ $t('modal.codeBackground') }}</p>
+											<el-color-picker show-alpha v-model="qrCodeParameter.background" @change=" getQRCode">
 											</el-color-picker>
 										</div>
 										<div>
 											<div class="color-select-box">
-												<p class="class-title">Code inside the eye</p>
+												<p class="class-title">{{ $t('modal.eyeInColor') }}</p>
 												<el-color-picker v-model="qrCodeParameter.eyeInColor"
 													@change="handleSetCodeEyesColor"></el-color-picker>
 											</div>
 											<div class="color-select-box">
-												<p class="class-title">Code outside the eye</p>
+												<p class="class-title">{{ $t('modal.eyeOutColor') }}</p>
 												<el-color-picker v-model="qrCodeParameter.eyeOutColor"
 													@change="handleSetCodeEyesColor"></el-color-picker>
 											</div>
@@ -1085,7 +1402,7 @@
 									<div>
 										<div class="flex-row">
 											<div class="flex-col">
-												<p class="class-title">Size</p>
+												<p class="class-title">{{ $t('modal.size') }}</p>
 												<el-input-number style="width: 100%" v-model="qrCodeParameter.fontSize"
 													controls-position="right" :min="16" :max="48" @change=" getQRCode"
 													@blur="
@@ -1095,65 +1412,65 @@
 									"></el-input-number>
 											</div>
 											<div class="flex-col">
-												<p class="class-title">Font</p>
+												<p class="class-title">{{ $t('modal.font') }}</p>
 												<el-select style="width: 100%" v-model="qrCodeParameter.fontFamily"
 													placeholder="Please select" @change=" getQRCode">
-													<el-option label="宋体" value="SimSun"></el-option>
-													<el-option label="黑体" value="SimHei"></el-option>
-													<el-option label="楷体" value="KaiTi"></el-option>
+													<el-option :label="$t('modal.fontSerif')" value="SimSun"></el-option>
+													<el-option :label="$t('modal.fontSans')" value="SimHei"></el-option>
+													<el-option :label="$t('modal.fontBrush')" value="KaiTi"></el-option>
 												</el-select>
 											</div>
 											<div class="flex-col">
-												<p class="class-title">Text color</p>
+												<p class="class-title">{{ $t('modal.textColor') }}</p>
 												<el-color-picker v-model="qrCodeParameter.fontColor"
 													@change=" getQRCode">
 												</el-color-picker>
 											</div>
 										</div>
 										<div class="add-text-box">
-											<p class="class-title">Add text
-											</p>
+											<p class="class-title">{{ $t('modal.addText') }}
+</p>
 											<el-input class="text-input-box" v-model="qrCodeParameter.textContent1"
-												placeholder="Enter the first line of text you want to add"></el-input>
+												:placeholder="$t('modal.enterFirstLine')"></el-input>
 											<el-input class="text-input-box" v-model="qrCodeParameter.textContent2"
-												placeholder="Please enter the second line of text you want to add"></el-input>
+												:placeholder="$t('modal.enterSecondLine')"></el-input>
 											<div>
 												<el-button class="text-confirm" style="margin-left: 0" type="text"
 													@click=" getQRCode"></el-button>
 												<el-button class="text-confirm"
 													style="color: #929293 !important; margin-left: 12px" type="text"
-													@click="handleClear()">Clear</el-button>
+													@click="handleClear()">{{ $t('modal.clear') }}</el-button>
 											</div>
 										</div>
 										<div>
-											<p class="class-title">Text position</p>
+											<p class="class-title">{{ $t('modal.textPosition') }}</p>
 											<el-radio-group v-model="qrCodeParameter.textPoistion" class="radio-box"
 												@change=" getQRCode">
-												<el-radio :label="2">Code outside</el-radio>
-												<el-radio :label="1">Code in the middle</el-radio>
+												<el-radio :label="2">{{ $t('modal.codeOutside') }}</el-radio>
+												<el-radio :label="1">{{ $t('modal.codeInMiddle') }}</el-radio>
 											</el-radio-group>
 										</div>
 									</div>
 								</el-tab-pane>
 
-								<el-tab-pane label="Other settings" name="other_attrs">
+								<el-tab-pane :label="$t('modal.otherSettings')" name="other_attrs">
 									<div class="other-container">
 										<div class="flex-row">
 											<div class="flex-col-other">
-												<p class="class-title">QR code margins</p>
+												<p class="class-title">{{ $t('modal.margins') }}</p>
 												<el-select style="width: 100%" v-model="qrCodeParameter.margin"
 													placeholder="Please select"
 													:disabled="qrCodeParameter.codeType != 'qrcode'"
 													@change=" getQRCode">
-													<el-option label="None" :value="0"></el-option>
-													<el-option label="1 color block" :value="1"></el-option>
-													<el-option label="2 color block" :value="2"></el-option>
-													<el-option label="3 color block" :value="3"></el-option>
-													<el-option label="4 color block" :value="4"></el-option>
+													<el-option :label="$t('modal.marginNone')" :value="0"></el-option>
+													<el-option :label="$t('modal.margin1')" :value="1"></el-option>
+													<el-option :label="$t('modal.margin2')" :value="2"></el-option>
+													<el-option :label="$t('modal.margin3')" :value="3"></el-option>
+													<el-option :label="$t('modal.margin4')" :value="4"></el-option>
 												</el-select>
 											</div>
 											<div class="flex-col-other">
-												<p class="class-title">Error correction rate</p>
+												<p class="class-title">{{ $t('modal.correction') }}</p>
 
 												<el-input-number v-if="
 									  qrCodeParameter.codeType == 'azteccode' ||
@@ -1176,14 +1493,17 @@
 											</div>
 										</div>
 										<div class="ratio-box">
-											<p class="class-title">Image resolution</p>
+											<p class="class-title">{{ $t('modal.resolution') }}</p>
 											<el-select style="width: 100%" v-model="qrCodeParameter.ResolutionRatio"
 												placeholder="Please select" @change=" getQRCode">
-												<el-option label="96" :value="0"></el-option>
+												<el-option :label="$t('modal.dpi72')" :value="72"></el-option>
+												<el-option :label="$t('modal.dpi96')" :value="0"></el-option>
+												<el-option :label="$t('modal.dpi150')" :value="150"></el-option>
+												<el-option :label="$t('modal.dpi300')" :value="300"></el-option>
 											</el-select>
 										</div>
 										<div>
-											<p class="class-title">Image format</p>
+											<p class="class-title">{{ $t('modal.format') }}</p>
 											<el-select style="width: 100%" v-model="qrCodeParameter.ImageType"
 												placeholder="Please select" @change=" getQRCode">
 												<el-option label="JPG" :value="0"></el-option>
@@ -1202,45 +1522,93 @@
 					<input id="foreImgUpload" style="display: none;" type="file" accept="image/png,image/jpg,image/jpeg"
 						@change="handleForeImgSuccess" />
 				</div>
+    </div>
 
+    <!-- Footer Stats -->
+    <footer class="app-footer" style="position: relative;">
+        <!-- Toggle Button -->
+        <div style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%); z-index: 10;">
+            <button onclick="toggleFooter()" style="background: white; border: 1px solid var(--border-color); border-radius: 50%; width: 32px; height: 32px; cursor: pointer; color: var(--text-muted); box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                <i class="el-icon-arrow-down" id="footerToggleIcon"></i>
+            </button>
+        </div>
+        <div id="footerCollapsibleContent">
+            <div class="stats-container" id="statsContainer">
+                <div class="stat-box skeleton" id="stat-generated">
+                    <span class="stat-label">{{ $t('footer.totalQR') }}</span>
+                    <span class="stat-value">-</span>
+                </div>
+                <div class="stat-box skeleton" id="stat-scans">
+                    <span class="stat-label">{{ $t('footer.totalScans') }}</span>
+                    <span class="stat-value">-</span>
+                </div>
+                <div class="stat-box skeleton" id="stat-today-scans">
+                    <span class="stat-label">{{ $t('footer.todayScans') }}</span>
+                    <span class="stat-value">-</span>
+                </div>
+                <div class="stat-box skeleton" id="stat-last-updated">
+                    <span class="stat-label">{{ $t('footer.lastUpdated') }}</span>
+                    <span class="stat-value">-</span>
+                </div>
+                <div class="stat-box" style="display: flex; align-items: center; justify-content: center; background: transparent; padding: 0;">
+                    <a href="https://vietqr.dangvo.io.vn" target="_blank" style="text-decoration: none; width: 100%; height: 100%;">
+                        <button type="button" class="btn-primary" style="font-size: 1rem; padding: 12px 20px; width: 100%; height: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #10B981 0%, #059669 100%); border: none; border-radius: 8px; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2); transition: transform 0.2s, box-shadow 0.2s;">
+                            <i class="el-icon-bank-card"></i> <span id="vietqrBtnText">{{ $t('footer.vietqr') }}</span>
+                        </button>
+                    </a>
+                </div>
+            </div>
+            <div style="text-align: center; font-size: 0.85rem; color: #6b7280; padding: 1.5rem 1rem 0; max-width: 1200px; margin: 0 auto; line-height: 1.5;">
+                <p style="margin-bottom: 0.25rem;"><span id="copyright1Text">{{ $t('footer.copyright1') }}</span></p>
+                <p style="margin-bottom: 1rem;"><span id="copyright2Text">{{ $t('footer.copyright2') }}</span></p>
+                <p style="font-size: 0.75rem; margin-bottom: 0;"><span id="disclaimerText">{{ $t('footer.disclaimer') }}</span></p>
+            </div>
+        </div>
+    </footer>
 
-				<div v-if="showModal" v-cloak class="copy-dialog-wrapper" @click="showModal = false">
-					<div class="copy-dialog-box" @click.stop="">
-						<div class="copy-dialog-header">
-							<div>Copy Barcode Link</div>
-							<i class="el-icon-close" style="cursor: pointer" color="#7F8792"
-								@click="showModal=false"></i>
-						</div>
-						<div class="copy-dialog-body">
-							<div class="copy-form-item">
-								<p class="copy-form-item-title">Link to This Barcode Image</p>
-								<el-input v-model="copyLinkData.imgLink" readonly>
-									<el-button slot="append" type="text" style="color: #2255f4"
-										@click="handleCopy('imgLink')">
-										Copy</el-button>
-								</el-input>
-							</div>
-							<div class="copy-form-item">
-								<p class="copy-form-item-title">Link to This Page</p>
-								<el-input v-model="copyLinkData.createImgLink" readonly>
-									<el-button slot="append" type="text" style="color: #2255f4"
-										@click="handleCopy('createImgLink')">Copy</el-button>
-								</el-input>
-							</div>
-							<div class="copy-form-item">
-								<p class="copy-form-item-title">Embed Code Snippet</p>
-								<el-input v-model="copyLinkData.imgLinkTag" readonly>
-									<el-button slot="append" type="text" style="color: #2255f4"
-										@click="handleCopy('imgLinkTag')">Copy</el-button>
-								</el-input>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle">{{ $t('preview.title') }}</h3>
+            <div class="modal-qr-container">
+                <img id="modalQrImg" src="" alt="{{ $t('preview.title') }}">
+            </div>
+            <p id="modalUrl" class="modal-url"></p>
+            <div class="modal-actions">
+                <button class="btn-secondary icon-btn" id="modalBtnPng"></button>
+                <button class="btn-secondary icon-btn" id="modalBtnHtml"></button>
+            </div>
+        </div>
+    </div>
 
+    <script src="themes/js/public/vue.min.js" type="text/javascript"></script>
+	<script src="themes/js/public/vue-router.js" type="text/javascript"></script>
+	<script src="themes/js/public/axios.min.js" type="text/javascript"></script>
+	<script src="themes/js/public/element-ui.js" type="text/javascript"></script>
+	<script src="themes/js/public/jquery.min.js" type="text/javascript"></script>
+	<script src="themes/js/public/sha1.js" type="text/javascript"></script>
+	<script src="themes/js/public/md5.js" type="text/javascript"></script>
+	<script src="themes/js/public/bwip.js" type="text/javascript"></script>
+	<script src="themes/js/public/gif.js" type="text/javascript"></script>
+	<script src="themes/js/public/gif.worker.js" type="text/javascript"></script>
+	<script src="themes/js/public/imagetracer_v1.2.6.js" type="text/javascript"></script>
+	<script src="themes/js/public/jszip.min.js" type="text/javascript"></script>
+	<script src="themes/js/public/qrcode.min.js" type="text/javascript"></script>
+	<script src="themes/js/common/header.js" type="text/javascript"></script>
+	<script src="themes/js/common/request.js" type="text/javascript"></script>
+	<script src="themes/js/common/data.js" type="text/javascript"></script>
+	<script src="themes/js/common/codeData.js" type="text/javascript"></script>
+	<script src="lang.js?v=23" type="text/javascript"></script>
+	<script src="themes/js/dist/code.min.js?v=2" type="text/javascript"></script>
 
+<style type="text/css">
+	.code-set-btngroup {
+		width: 100%;
+	}
 
+	/* Đã xóa #codeTextarea { height: 15vw; } để ưu tiên CSS trong code-generator-orgin.css */
+</style>
 
 			<script>
 
@@ -1279,11 +1647,13 @@
 					function handleScroll() {
 						let scrollHeight = document.body.scrollHeight
 						let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-						let footer_height = document.getElementsByClassName('footer')[0].offsetHeight
-						let menu_height = document.getElementsByClassName('code-menu-box')[0].offsetHeight
+						let footer = document.getElementsByClassName('footer')[0];
+						let codeMenuBox = document.getElementsByClassName('code-menu-box')[0];
+						let footer_height = footer ? footer.offsetHeight : 0;
+						let menu_height = codeMenuBox ? codeMenuBox.offsetHeight : 0;
 						let max = scrollHeight - footer_height - menu_height - 88
-						let codeMenuBox = document.getElementById('codeMenuBox')
-						codeMenuBox.style.top = `${scrollTop > max ? 88 + max : 88 + scrollTop}px`
+						let codeMenuBoxEl = document.getElementById('codeMenuBox');
+						if(codeMenuBoxEl) codeMenuBoxEl.style.top = `${scrollTop > max ? 88 + max : 88 + scrollTop}px`
 					}
 				}
 			</script>
@@ -1321,6 +1691,11 @@
 							getBarCodeData();
 							create = true;
 						}
+                        
+                        setTimeout(() => {
+                            vm.handleOpenQRCodeSetting();
+                        }, 250);
+                        return;
 					}
 					vm[fun]()
 				}
@@ -1329,21 +1704,25 @@
 				let textarea = document.getElementById("codeTextarea");
 
 				function getBarCodeData() {
-					this.value = document.getElementById("codeTextarea").value;
+					let codeTextarea = document.getElementById("codeTextarea");
+					this.value = codeTextarea ? codeTextarea.value : "https://example.com";
 
 					if (timerTextarea) {
 						clearTimeout(timerTextarea)
 					}
 					timerTextarea = setTimeout(() => {
-						vm.handleInputData(this.value)
+						if(vm && vm.handleInputData) vm.handleInputData(this.value)
 					}, 200)
 				}
 
 			</script>
-	</body>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="super_bulk.js?v=13" defer></script>
+</body>
+
 
 </html>
-
-<script type="text/javascript">
-	$("#nav-qrcode").addClass("select-nav");
-</script>

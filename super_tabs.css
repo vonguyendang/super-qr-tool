@@ -1,0 +1,428 @@
+/* =========================================================================
+   PREMIUM UI ENHANCEMENTS FOR SUPER-QR-TOOL
+   ========================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Main Fonts and Overrides */
+.qr-code-main, .code-operate-container, .tabs, .tab-content, .el-button {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* -------------------------------------------------------------------------
+   TABS DESIGN (Pill & Floating Style)
+   ------------------------------------------------------------------------- */
+.tabs {
+    display: flex;
+    gap: 0.6rem;
+    overflow-x: auto;
+    border-bottom: none;
+    margin-bottom: 2rem;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none; /* Firefox */
+}
+.tabs::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}
+
+.tab-button {
+    flex: 0 0 auto;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #6B7280;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 999px; /* Pill shape */
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+}
+
+.tab-button:hover {
+    background-color: #F3F4F6;
+    color: #374151;
+    transform: translateY(-1px);
+}
+
+.tab-button.active {
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    border: 2px solid transparent;
+}
+
+/* -------------------------------------------------------------------------
+   TAB CONTENT & ANIMATIONS
+   ------------------------------------------------------------------------- */
+.tab-content {
+    opacity: 0;
+    transform: translateY(10px);
+    display: none;
+}
+.tab-content.active-tab-anim {
+    display: block;
+    animation: slideUpFade 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideUpFade {
+    0% { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.tab-content h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.tab-content h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: #4F46E5;
+    border-radius: 3px;
+}
+
+/* -------------------------------------------------------------------------
+   FORMS & INPUTS (Smooth & Modern)
+   ------------------------------------------------------------------------- */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #374151;
+}
+
+.tab-content input[type="text"], 
+.tab-content input[type="email"], 
+.tab-content textarea, 
+.tab-content select {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    background: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: #111827;
+    transition: all 0.3s ease;
+}
+
+.tab-content input:focus, 
+.tab-content textarea:focus, 
+.tab-content select:focus {
+    outline: none;
+    background: #FFFFFF;
+    border-color: #6366F1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+}
+
+.tab-content textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Grid for forms */
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.grid-2 input, .grid-2 textarea, .grid-2 select {
+    margin-bottom: 0;
+}
+
+/* -------------------------------------------------------------------------
+   BUTTONS (Interactive & Clean)
+   ------------------------------------------------------------------------- */
+.btn-super-generate {
+    width: 100%;
+    padding: 1rem !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    border-radius: 12px !important;
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+    border: none !important;
+    box-shadow: 0 8px 16px rgba(79, 70, 229, 0.25) !important;
+    color: white !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+}
+
+.btn-super-generate:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 20px rgba(79, 70, 229, 0.35) !important;
+}
+.btn-super-generate:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2) !important;
+}
+.btn-super-generate:disabled {
+    opacity: 0.7 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+/* Upload Button */
+.upload-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.2rem;
+    background: #EEF2FF;
+    color: #4F46E5;
+    border: 1px dashed #6366F1;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.upload-btn:hover {
+    background: #E0E7FF;
+}
+
+/* -------------------------------------------------------------------------
+   RESULTS SECTION & GLASSMORPHISM TABLE
+   ------------------------------------------------------------------------- */
+#resultsSection {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.results-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.qr-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+    text-align: left;
+}
+
+.qr-table th {
+    background-color: transparent;
+    font-weight: 600;
+    color: #6B7280;
+    padding: 1rem;
+    border-bottom: 2px solid #E5E7EB;
+}
+
+.qr-table td {
+    padding: 1rem;
+    background: #FFFFFF;
+    border-top: 1px solid #F3F4F6;
+    border-bottom: 1px solid #F3F4F6;
+}
+.qr-table tr td:first-child {
+    border-left: 1px solid #F3F4F6;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+.qr-table tr td:last-child {
+    border-right: 1px solid #F3F4F6;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.qr-table tr {
+    transition: all 0.2s ease;
+}
+.qr-table tr:hover td {
+    background: #EEF2FF;
+    border-color: #E0E7FF;
+}
+
+.url-cell {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: monospace;
+    color: #374151;
+}
+.url-cell:hover {
+    white-space: normal;
+    word-break: break-all;
+    background: #F3F4F6;
+    padding: 0.5rem;
+    border-radius: 6px;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Table Actions */
+.btn-action {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+.btn-download {
+    background: #EEF2FF;
+    color: #4F46E5;
+}
+.btn-download:hover {
+    background: #4F46E5;
+    color: white;
+}
+.btn-view {
+    background: #F3F4F6;
+    color: #4B5563;
+}
+.btn-view:hover {
+    background: #374151;
+    color: white;
+}
+
+/* Custom Checkbox */
+.custom-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: #4F46E5;
+    cursor: pointer;
+}
+
+/* -------------------------------------------------------------------------
+   PAGINATION
+   ------------------------------------------------------------------------- */
+.pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+.page-btn {
+    min-width: 38px;
+    height: 38px;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    background: white;
+    color: #374151;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+.page-btn:hover:not(.disabled):not(.active) {
+    border-color: #6366F1;
+    color: #6366F1;
+    background: #EEF2FF;
+}
+.page-btn.active {
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
+}
+
+/* -------------------------------------------------------------------------
+   MODAL
+   ------------------------------------------------------------------------- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+}
+.modal.show { display: flex; animation: fadeIn 0.3s ease; }
+
+.modal-content {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 90%; max-width: 420px;
+    text-align: center;
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.modal.show .modal-content { transform: scale(1); }
+
+.close-modal {
+    position: absolute;
+    top: 1.2rem; right: 1.5rem;
+    font-size: 1.8rem;
+    color: #9CA3AF;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.close-modal:hover { color: #111827; }
+
+.modal-qr-container {
+    background: #F9FAFB;
+    padding: 1.5rem;
+    border-radius: 16px;
+    margin: 1.5rem 0;
+}
+.modal-qr-container img { width: 100%; border-radius: 8px; }
+
+/* -------------------------------------------------------------------------
+   UTILITIES
+   ------------------------------------------------------------------------- */
+.selected-badge {
+    background: #10B981;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+}
+
+.error-box {
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Adjust the original column layout to give more space to the left side */
+@media (min-width: 1200px) {
+    .el-col-lg-15 { width: 62.5%; }
+    .el-col-lg-9 { width: 37.5%; }
+}

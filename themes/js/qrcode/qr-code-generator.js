@@ -1,7 +1,8 @@
 const router = new VueRouter({
 	mode: 'history'
 })
-const vm = new Vue({
+Vue.prototype.$t = function(key) { return window.i18n ? window.i18n.t(key) : key; };
+window.vm = new Vue({
 	el: '#app',
 	router,
 	mixins: [codeDeal, qrCodeSetting],
@@ -189,8 +190,10 @@ const vm = new Vue({
 		handleScroll(){
 			let scrollHeight = document.body.scrollHeight
 			let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-			let footer_height = document.getElementsByClassName('footer')[0].offsetHeight
-			let menu_height = document.getElementsByClassName('code-menu-box')[0].offsetHeight
+			let footer = document.getElementsByClassName('footer')[0];
+			let codeMenuBox = document.getElementsByClassName('code-menu-box')[0];
+			let footer_height = footer ? footer.offsetHeight : 0;
+			let menu_height = codeMenuBox ? codeMenuBox.offsetHeight : 0;
 			let max = scrollHeight - footer_height - menu_height - 88
 			this.scrollTop = scrollTop > max ? max : scrollTop
 		},
