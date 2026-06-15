@@ -7,11 +7,6 @@ if (!is_dir($dataDir)) {
     mkdir($dataDir, 0777, true);
 }
 
-$logsFile = $dataDir . '/logs.json';
-if (!file_exists($logsFile)) {
-    file_put_contents($logsFile, json_encode([]));
-}
-
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
@@ -27,15 +22,78 @@ if (!isset($input['qr_count']) || !is_numeric($input['qr_count'])) {
     exit;
 }
 
-$content = file_get_contents($logsFile);
-$logs = json_decode($content, true);
-if (!is_array($logs)) $logs = [];
+// Migration logic
+$logsFile = $dataDir . '/logs.json';
+$statsFile = $dataDir . '/stats.json';
 
-$logs[] = [
-    'event'     => 'generate',
-    'qr_count'  => (int) $input['qr_count'],
-    'timestamp' => date('c')
-];
+if (!file_exists($statsFile)) {
+    $initialStats = [
+        'totalQR' => 0,
+        'totalSessions' => 0,
+        'todayDate' => date('Y-m-d'),
+        'todaySessions' => 0,
+        'lastUpdated' => date('c')
+    ];
 
-file_put_contents($logsFile, json_encode($logs, JSON_PRETTY_PRINT));
+    if (file_exists($logsFile)) {
+        $content = file_get_contents($logsFile);
+        $logs = json_decode($content, true);
+        if (is_array($logs)) {
+            $today = date('Y-m-d');
+            foreach ($logs as $log) {
+                if (isset($log['qr_count'])) {
+                    $initialStats['totalQR'] += (int) $log['qr_count'];
+                }
+                if (isset($log['timestamp'])) {
+                    $logDate = substr($log['timestamp'], 0, 10);
+                    if ($logDate === $today) {
+                        $initialStats['todaySessions']++;
+                    }
+                    if ($initialStats['lastUpdated'] === null || $log['timestamp'] > $initialStats['lastUpdated']) {
+                        $initialStats['lastUpdated'] = $log['timestamp'];
+                    }
+                }
+                $initialStats['totalSessions']++;
+            }
+        }
+        rename($logsFile, $logsFile . '.backup');
+    }
+    file_put_contents($statsFile, json_encode($initialStats));
+}
+
+// Update stats with file lock
+$fp = fopen($statsFile, 'c+');
+if (flock($fp, LOCK_EX)) {
+    $size = filesize($statsFile);
+    $content = $size > 0 ? fread($fp, $size) : '';
+    $stats = json_decode($content, true);
+
+    if (!is_array($stats)) {
+        $stats = [
+            'totalQR' => 0,
+            'totalSessions' => 0,
+            'todayDate' => date('Y-m-d'),
+            'todaySessions' => 0,
+            'lastUpdated' => date('c')
+        ];
+    }
+
+    $today = date('Y-m-d');
+    if (!isset($stats['todayDate']) || $stats['todayDate'] !== $today) {
+        $stats['todayDate'] = $today;
+        $stats['todaySessions'] = 0;
+    }
+
+    $stats['totalQR'] += (int) $input['qr_count'];
+    $stats['totalSessions'] += 1;
+    $stats['todaySessions'] += 1;
+    $stats['lastUpdated'] = date('c');
+
+    ftruncate($fp, 0);
+    rewind($fp);
+    fwrite($fp, json_encode($stats, JSON_PRETTY_PRINT));
+    flock($fp, LOCK_UN);
+}
+fclose($fp);
+
 echo json_encode(['success' => true]);

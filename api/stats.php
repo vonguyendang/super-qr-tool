@@ -3,42 +3,57 @@ date_default_timezone_set('Asia/Ho_Chi_Minh'); // Đảm bảo thời gian luôn
 header('Content-Type: application/json');
 
 $dataDir = __DIR__ . '/../data';
+$statsFile = $dataDir . '/stats.json';
 $logsFile = $dataDir . '/logs.json';
 
-function readJson(string $file): array
-{
-    if (!file_exists($file)) return [];
-    $content = file_get_contents($file);
+$stats = [
+    'totalQR'       => 0,
+    'totalSessions' => 0,
+    'todayDate'     => date('Y-m-d'),
+    'todaySessions' => 0,
+    'lastUpdated'   => null
+];
+
+if (file_exists($statsFile)) {
+    $content = file_get_contents($statsFile);
     $data = json_decode($content, true);
-    return is_array($data) ? $data : [];
+    if (is_array($data)) {
+        $stats = array_merge($stats, $data);
+    }
+} else if (file_exists($logsFile)) {
+    // Basic migration
+    $content = file_get_contents($logsFile);
+    $logs = json_decode($content, true);
+    if (is_array($logs)) {
+        $today = date('Y-m-d');
+        foreach ($logs as $log) {
+            if (isset($log['qr_count'])) {
+                $stats['totalQR'] += (int) $log['qr_count'];
+            }
+            if (isset($log['timestamp'])) {
+                $logDate = substr($log['timestamp'], 0, 10);
+                if ($logDate === $today) {
+                    $stats['todaySessions']++;
+                }
+                if ($stats['lastUpdated'] === null || $log['timestamp'] > $stats['lastUpdated']) {
+                    $stats['lastUpdated'] = $log['timestamp'];
+                }
+            }
+            $stats['totalSessions']++;
+        }
+    }
 }
 
-$logs = readJson($logsFile);
-
-$totalQR       = 0;
-$totalSessions = count($logs);
-$todaySessions = 0;
-$lastUpdated   = null;
-$today         = date('Y-m-d');
-
-foreach ($logs as $log) {
-    if (isset($log['qr_count'])) {
-        $totalQR += (int) $log['qr_count'];
-    }
-    if (isset($log['timestamp'])) {
-        $logDate = substr($log['timestamp'], 0, 10);
-        if ($logDate === $today) {
-            $todaySessions++;
-        }
-        if ($lastUpdated === null || $log['timestamp'] > $lastUpdated) {
-            $lastUpdated = $log['timestamp'];
-        }
-    }
+if ($stats['todayDate'] !== date('Y-m-d')) {
+    $stats['todaySessions'] = 0;
 }
+
+$totalQR       = $stats['totalQR'];
+$totalSessions = $stats['totalSessions'];
+$todaySessions = $stats['todaySessions'];
+$lastUpdated   = $stats['lastUpdated'];
 
 // --- FAKE DATA LOGIC START ---
-// Đoạn code này tự động tăng ngẫu nhiên 0-50 lượt truy cập mỗi giờ.
-// Có thể xoá đoạn này khi lượng truy cập thực tế đã đủ lớn.
 $fakeStartTimestamp = strtotime("2026-06-01 00:00:00"); // Thời điểm bắt đầu tính fake
 $currentHour = floor(time() / 3600);
 $startHour = floor($fakeStartTimestamp / 3600);
