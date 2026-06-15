@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Asia/Ho_Chi_Minh'); // Đảm bảo thời gian luôn là GMT+7
 header('Content-Type: application/json');
 
 $dataDir = __DIR__ . '/../data';
