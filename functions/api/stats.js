@@ -88,7 +88,7 @@ export async function onRequestGet(context) {
         }
         
         // format ISO cho lastUpdated
-        const fakeLastUpdatedIso = new Date(fakeLastUpdatedTime * 1000 + offset).toISOString();
+        const fakeLastUpdatedIso = new Date(fakeLastUpdatedTime * 1000).toISOString();
         if (lastUpdated === null || fakeLastUpdatedIso > lastUpdated) {
             lastUpdated = fakeLastUpdatedIso;
         }
