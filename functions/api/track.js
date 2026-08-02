@@ -27,7 +27,7 @@ export async function onRequestPost(context) {
         const offset = 7 * 60 * 60 * 1000;
         const vnDate = new Date(d.getTime() + offset);
         const today = vnDate.toISOString().split('T')[0];
-        const lastUpdated = vnDate.toISOString();
+        const lastUpdated = d.toISOString();
 
         if (!stats) {
             stats = {
