@@ -659,7 +659,7 @@ window.onclick = function (event) {
 
 // --- Tracking ---
 function trackGeneration(qrCount) {
-    fetch('api/track.php', {
+    fetch('/api/track', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ qr_count: qrCount })
@@ -669,7 +669,7 @@ function trackGeneration(qrCount) {
 }
 
 function fetchStats() {
-    fetch('api/stats.php')
+    fetch('/api/stats')
         .then(r => r.json())
         .then(data => {
             let statGenerated = document.getElementById('stat-generated');

@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Super QR Tool 🚀</h1>
-  <p>A premium, feature-rich, and completely free static web application for generating and customizing QR Codes.</p>
+  <p>A premium, feature-rich, and completely free static web application for generating and customizing QR Codes. Includes a dynamic hit counter and DDoS protection, ready for Cloudflare deployment.</p>
   <p>
     <a href="#english">🇬🇧 English</a> | <a href="#tiếng-việt">🇻🇳 Tiếng Việt</a>
   </p>
@@ -12,81 +12,48 @@
 # Super QR Tool 🚀 (English)
 *👉 [🇻🇳 Đọc bằng Tiếng Việt (Read in Vietnamese)](#tiếng-việt)*
 
-Super QR Tool is a powerful, client-side only static web application that allows you to easily generate, customize, and bulk-download QR codes. It runs entirely in your web browser, requiring absolutely **no backend**, **no database**, and **no installation**.
+Super QR Tool is a powerful, client-side static web application that allows you to easily generate, customize, and bulk-download QR codes. It includes serverless functions designed to run on Cloudflare Pages to provide a dynamic statistics counter (with "fake" values for credibility) and DDoS protection.
 
 ## ✨ Key Features
 
 - **Multi-Type Support**: Create QR codes for URLs, vCards, Text, Emails, Social Media profiles, Wi-Fi, Phone numbers, SMS, GPS Locations, Events, Crypto wallets, and App Store links.
 - **Bulk Generation**: Easily generate hundreds of QR codes at once by pasting a list of URLs/texts or by importing an Excel/CSV file.
-- **Advanced Customization**:
-  - **Styles**: Change the shapes of the data patterns and the "eyes" of the QR code.
-  - **Colors**: Apply solid colors, gradients, or even background images.
-  - **Logos**: Insert your own logo into the center of the QR code with customizable shapes.
-  - **Frames & Borders**: Add creative borders to make your QR code stand out.
-  - **Text**: Insert a custom text above or below the QR code.
-- **VietQR Transfer Codes**: Built-in integration to quickly generate Vietnamese Bank Transfer (VietQR) codes.
+- **Advanced Customization**: Shapes, colors, logos, borders, and text insertions.
 - **Live Preview**: All customizations are rendered instantly in real-time.
-- **Flexible Export**: Download single or bulk QR codes in formats such as PNG, JPG, SVG, HTML, and ZIP archives.
-- **Bilingual Interface**: Seamlessly switch between English and Vietnamese.
+- **Hit Counter with Fake Data**: Displays a generation counter that uses Cloudflare KV and a seeded algorithm to simulate realistic usage numbers over time.
+- **DDoS Protection Ready**: Designed to work seamlessly behind Cloudflare WAF.
 
-## 🚀 Installation & Quick Start
+## 🌐 Deployment to Cloudflare Pages (Recommended)
 
-Since this is a fully static web application, no Node.js environment or Web Server is strictly required for local usage. 
+Super QR Tool is designed to be hosted on **Cloudflare Pages** for free. The backend functions (hit counter) use Cloudflare Pages Functions and Cloudflare KV.
 
-### Method 1: Direct Execution (No Server Needed)
-1. **Download the project**: Clone this repository or download it as a ZIP file.
-   ```bash
-   git clone https://github.com/vonguyendang/super-qr-tool.git
-   ```
-2. **Open the App**: Simply double-click the `index.html` file to open it in your preferred web browser (Chrome, Firefox, Safari). The app will work perfectly offline!
+### Step 1: Push to GitHub
+1. Create a new repository on GitHub.
+2. Push the code from this folder to your new GitHub repository.
 
-### Method 2: Local Web Server (For Development)
-If you prefer to run it via a local server (to avoid any strict browser CORS issues when loading local assets):
-1. **Using Python (Built-in)**:
-   ```bash
-   cd super-qr-tool
-   python3 -m http.server 8000
-   ```
-   Then navigate to `http://localhost:8000` in your browser.
-2. **Using Node.js (http-server)**:
-   ```bash
-   npx http-server .
-   ```
+### Step 2: Create a Cloudflare KV Namespace
+1. Log in to the [Cloudflare Dashboard](https://dash.cloudflare.com).
+2. Go to **Workers & Pages** -> **KV**.
+3. Click **Create a namespace**, name it `QR_STATS`, and click **Add**.
 
-## 📖 Usage Guide
+### Step 3: Deploy via Cloudflare Pages
+1. Go to **Workers & Pages** -> **Overview** and click **Create application**.
+2. Select the **Pages** tab and click **Connect to Git**.
+3. Select your GitHub repository and click **Begin setup**.
+4. Leave the "Build command" and "Build output directory" empty (since it's a static site).
+5. Before clicking "Save and Deploy", go to **Environment variables (advanced)** -> **KV namespace bindings**.
+   - Variable name: `QR_STATS`
+   - KV namespace: Select the `QR_STATS` namespace you created in Step 2.
+6. Click **Save and Deploy**. Cloudflare will build and host your site.
 
-### 1. Generating a Single QR Code
-1. Select the desired tab based on your data type (e.g., URL, vCard, Text, Location).
-2. Fill out the form fields with your data.
-3. The QR Code will dynamically update in the **Preview Panel** on the right side.
-
-### 2. Bulk Generation (Multiple QR Codes)
-1. At the top of the interface, you will see a large text area.
-2. Paste multiple lines of data (one URL/text per line), or click **Import from Excel/CSV** to upload a spreadsheet.
-3. Click **Generate QR Codes**. 
-4. A table will appear listing all the generated QR codes. You can preview them individually or click **Download All (ZIP)** to grab them all at once.
-
-### 3. Advanced Customization
-1. Click the **Setting** button (gear icon) in the preview panel.
-2. Navigate through the tabs (**Style, Logo, Border, Color, etc.**) to modify the aesthetic of your QR code.
-3. Click **Download** to save your customized QR code to your device.
-
-## 🌐 Deployment
-
-Super QR Tool is extremely lightweight and can be hosted on any static hosting provider for **free** in just a few clicks.
-
-- **GitHub Pages**: Simply push this code to a repository and enable GitHub Pages on the `main` branch.
-- **Vercel / Netlify / Cloudflare Pages**: Drag and drop the project folder into their dashboard, or link your GitHub repository. No build command or output directory configuration is needed.
-- **Standard Web Hosting (cPanel/FTP)**: Upload the entire folder to your `public_html` directory.
-
-## 💻 Technologies Used
-
-- **Frontend Core**: HTML5, CSS3, Vanilla JavaScript
-- **Libraries**:
-  - [Vue.js](https://vuejs.org/) (via CDN) for data binding & i18n.
-  - [Element UI](https://element.eleme.io/) for UI components.
-  - [JSZip](https://stuk.github.io/jszip/) & [FileSaver.js](https://github.com/eligrey/FileSaver.js) for bulk downloading.
-  - [SheetJS (xlsx)](https://sheetjs.com/) for Excel data parsing.
+### Step 4: Configure Anti-DDoS (Security)
+To ensure the hit counter API doesn't get spammed:
+1. Go to your Cloudflare Dashboard -> select the domain attached to your Pages project.
+2. Navigate to **Security** -> **WAF** -> **Rate limiting rules**.
+3. Create a rule for requests to `/api/track`. For example: 
+   - If requests > 20 per 10 seconds per IP, then **Block**.
+4. Navigate to **Security** -> **Bots** and enable **Bot Fight Mode**.
+5. Navigate to **Security** -> **Settings** and set the **Security Level** to **High**.
 
 ---
 
@@ -94,78 +61,48 @@ Super QR Tool is extremely lightweight and can be hosted on any static hosting p
 # Super QR Tool 🚀 (Tiếng Việt)
 *👉 [🇬🇧 Read in English (Đọc bằng Tiếng Anh)](#english)*
 
-Super QR Tool là một công cụ web tĩnh cao cấp, đa tính năng và hoàn toàn miễn phí cho phép bạn tạo, tùy chỉnh và tải hàng loạt mã QR một cách chuyên nghiệp. Ứng dụng này chạy 100% trên trình duyệt của bạn, **không cần backend**, **không cần cơ sở dữ liệu** và **không yêu cầu cài đặt phần mềm**.
+Super QR Tool là một công cụ web tĩnh cao cấp, đa tính năng và hoàn toàn miễn phí. Phiên bản này được tích hợp mã nguồn backend Serverless chạy trên Cloudflare Pages để hiển thị bộ đếm lượt truy cập (với thuật toán tạo số liệu giả lập tăng độ uy tín) cùng khả năng chống DDoS cực mạnh.
 
 ## ✨ Tính năng nổi bật
 
-- **Hỗ trợ đa dạng**: Tạo mã QR cho Đường dẫn (URL), Danh thiếp (vCard), Văn bản, Email, Mạng xã hội, Wi-Fi, Điện thoại, SMS, Vị trí GPS, Sự kiện, Tiền điện tử (Crypto), và Liên kết tải App.
-- **Tạo mã hàng loạt (Bulk Generation)**: Dễ dàng tạo hàng trăm mã QR cùng lúc bằng cách dán danh sách URL/văn bản hoặc tải lên tệp Excel/CSV.
-- **Tùy chỉnh chuyên sâu**:
-  - **Kiểu dáng**: Thay đổi hình dạng của các điểm dữ liệu và "mắt" mã QR.
-  - **Màu sắc**: Sử dụng màu đơn sắc, đổ màu (gradient), hoặc chèn hình nền.
-  - **Thêm Logo**: Chèn logo vào giữa mã QR với nhiều tùy chọn cắt gọt (tròn, vuông).
-  - **Khung viền**: Thêm các loại khung viền sáng tạo và bắt mắt.
-  - **Thêm văn bản**: Chèn thêm dòng chữ hướng dẫn ở phía trên hoặc dưới mã.
-- **Mã chuyển khoản VietQR**: Tích hợp sẵn nút tạo mã QR chuyển khoản ngân hàng Việt Nam (VietQR) nhanh chóng.
-- **Xem trước trực tiếp (Live Preview)**: Mọi thay đổi về màu sắc, thiết kế đều được cập nhật và hiển thị ngay lập tức.
-- **Tải xuống linh hoạt**: Hỗ trợ tải mã đơn lẻ hoặc hàng loạt dưới định dạng PNG, JPG, SVG, HTML và tệp nén ZIP.
-- **Đa ngôn ngữ**: Chuyển đổi mượt mà giữa tiếng Anh và tiếng Việt.
+- **Hỗ trợ đa dạng**: Tạo mã QR cho URL, vCard, Văn bản, Mạng xã hội, Wi-Fi, Điện thoại...
+- **Tạo mã hàng loạt**: Dán danh sách hoặc tải lên tệp Excel/CSV để tạo hàng trăm mã cùng lúc.
+- **Tùy chỉnh chuyên sâu**: Đổi màu sắc, kiểu dáng, chèn hình nền, logo, viền, chữ...
+- **Bộ đếm lượt truy cập (Có tính năng Fake)**: Sử dụng Cloudflare KV để đếm số lượt tạo QR. Đi kèm với thuật toán giả lập tăng tự nhiên theo thời gian để tăng độ uy tín.
+- **Sẵn sàng chống DDoS**: Tương thích hoàn hảo với hệ thống tường lửa (WAF) của Cloudflare.
 
-## 🚀 Cài đặt & Khởi chạy
+## 🌐 Hướng dẫn triển khai lên Cloudflare Pages (Miễn phí 100%)
 
-Vì đây là một ứng dụng web tĩnh thuần túy, bạn hoàn toàn không cần cài đặt môi trường Node.js hay bất kỳ Web Server phức tạp nào.
+Để các tính năng thống kê hoạt động, bạn **BẮT BUỘC** phải deploy dự án này lên Cloudflare Pages và kết nối cơ sở dữ liệu KV.
 
-### Cách 1: Chạy trực tiếp (Không cần Server)
-1. **Tải dự án**: Clone kho lưu trữ này hoặc tải về dưới dạng file ZIP.
-   ```bash
-   git clone https://github.com/vonguyendang/super-qr-tool.git
-   ```
-2. **Mở ứng dụng**: Chỉ cần nhấn đúp vào tệp `index.html` để mở bằng trình duyệt web của bạn (Chrome, Cốc Cốc, Safari...). Ứng dụng hoạt động hoàn hảo ngay cả khi không có kết nối mạng (Offline)!
+### Bước 1: Đẩy mã nguồn lên GitHub
+1. Tạo một kho lưu trữ (repository) mới trên GitHub.
+2. Đẩy toàn bộ mã nguồn thư mục này lên GitHub.
 
-### Cách 2: Chạy qua Local Server (Dành cho nhà phát triển)
-Nếu bạn muốn chạy ứng dụng qua localhost (để tránh một số lỗi CORS khắt khe của trình duyệt khi load các file local):
-1. **Sử dụng Python (Có sẵn trên máy Mac/Linux)**:
-   ```bash
-   cd super-qr-tool
-   python3 -m http.server 8000
-   ```
-   Sau đó truy cập `http://localhost:8000` trên trình duyệt.
-2. **Sử dụng Node.js (http-server)**:
-   ```bash
-   npx http-server .
-   ```
+### Bước 2: Tạo Cloudflare KV Namespace (Database)
+1. Đăng nhập vào [Cloudflare Dashboard](https://dash.cloudflare.com).
+2. Chuyển đến mục **Workers & Pages** -> **KV**.
+3. Bấm **Create a namespace**, nhập tên là `QR_STATS`, rồi bấm **Add**.
 
-## 📖 Hướng dẫn sử dụng
+### Bước 3: Deploy lên Cloudflare Pages
+1. Trong Cloudflare Dashboard, vào **Workers & Pages** -> **Overview** -> Bấm **Create application**.
+2. Chọn tab **Pages** và bấm **Connect to Git**.
+3. Chọn repository chứa mã nguồn của bạn trên GitHub và bấm **Begin setup**.
+4. Phần "Build command" và "Build output directory" để trống hoàn toàn.
+5. Cuộn xuống phần **Environment variables (advanced)**, tìm mục **KV namespace bindings** và thêm:
+   - Variable name: `QR_STATS`
+   - KV namespace: Chọn `QR_STATS` bạn vừa tạo ở Bước 2.
+6. Bấm **Save and Deploy**. Đợi vài phút để Cloudflare triển khai dự án.
 
-### 1. Tạo một mã QR đơn lẻ
-1. Chọn tab tương ứng với loại dữ liệu bạn muốn tạo (VD: Đường dẫn, Danh thiếp, Vị trí...).
-2. Điền thông tin vào các trường dữ liệu.
-3. Mã QR của bạn sẽ tự động cập nhật ở **Khung xem trước** bên phải màn hình.
-
-### 2. Tạo mã hàng loạt (Nhiều mã QR cùng lúc)
-1. Ở phần trên cùng của giao diện, bạn sẽ thấy một ô nhập liệu lớn.
-2. Dán nhiều dòng dữ liệu vào ô này (mỗi dòng là một mã QR), hoặc bấm **Import từ Excel/CSV** để tải lên file bảng tính.
-3. Bấm nút **Tạo mã QR**.
-4. Một bảng danh sách các mã QR sẽ hiện ra. Bạn có thể xem trước từng mã hoặc bấm **Tải tất cả (ZIP)** để tải về toàn bộ cùng lúc.
-
-### 3. Tùy chỉnh giao diện nâng cao
-1. Nhấp vào nút **Cài đặt** (biểu tượng bánh răng) ở khu vực xem trước.
-2. Sử dụng các tab (**Style, Logo, Border, Color...**) để biến tấu màu sắc và hình dáng mã QR theo ý muốn.
-3. Bấm **Tải xuống** để lưu tác phẩm đã được thiết kế về máy tính của bạn.
-
-## 🌐 Triển khai (Deployment)
-
-Super QR Tool cực kỳ nhẹ và có thể được triển khai lên mạng **miễn phí** chỉ trong vài cú click chuột.
-
-- **GitHub Pages**: Đẩy mã nguồn này lên kho lưu trữ GitHub của bạn và bật tính năng GitHub Pages ở nhánh `main`.
-- **Vercel / Netlify / Cloudflare Pages**: Kéo thả thư mục dự án vào trang quản trị của họ, hoặc liên kết trực tiếp với repository GitHub. Không cần cấu hình lệnh Build hay thư mục Output.
-- **Hosting Truyền thống (cPanel/FTP)**: Upload toàn bộ các file trong thư mục này vào thư mục `public_html` của bạn là xong.
+### Bước 4: Thiết lập Chống DDoS & Spam
+Để bảo vệ API đếm lượt tải không bị spam request:
+1. Chọn tên miền dự án của bạn trên Cloudflare.
+2. Vào phần **Security** -> **WAF** -> **Rate limiting rules**.
+3. Tạo một quy tắc (rule) chặn spam vào API: Nếu đường dẫn chứa `/api/track` và có hơn 20 request / 10 giây từ cùng 1 IP -> Hành động: **Block**.
+4. Vào **Security** -> **Bots** -> Bật **Bot Fight Mode**.
+5. Vào **Security** -> **Settings** -> Chỉnh **Security Level** thành **High**.
 
 ## 💻 Công nghệ sử dụng
-
-- **Mã nguồn cốt lõi**: HTML5, CSS3, Vanilla JavaScript
-- **Thư viện tích hợp**:
-  - [Vue.js](https://vuejs.org/) (qua CDN): Xử lý giao diện và đa ngôn ngữ.
-  - [Element UI](https://element.eleme.io/): Bộ công cụ xây dựng giao diện.
-  - [JSZip](https://stuk.github.io/jszip/) & [FileSaver.js](https://github.com/eligrey/FileSaver.js): Xử lý tải xuống file nén ZIP hàng loạt.
-  - [SheetJS (xlsx)](https://sheetjs.com/): Đọc dữ liệu từ file Excel.
+- **Frontend Core**: HTML5, CSS3, Vanilla JavaScript
+- **Backend**: Cloudflare Pages Functions (JS) & Cloudflare KV
+- **Thư viện tích hợp**: Vue.js, Element UI, JSZip, FileSaver.js, SheetJS (xlsx).
